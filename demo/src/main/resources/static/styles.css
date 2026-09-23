@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    /* Fondo azul muy oscuro casi negro */
+    background-color: #0b1121; 
+    color: white;
+}
+
+/* --- ENCABEZADO --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background-color: #0b1121;
+}
+
+nav {
+    display: flex;
+    gap: 40px;
+}
+
+nav a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+nav a.active {
+    color: #fbd34d; /* Dorado */
+    border-bottom: 2px solid #fbd34d;
+    padding-bottom: 5px;
+}
+
+.spacer {
+    width: 30px; /* Equilibra el flexbox */
+}
+
+/* Línea degradada debajo del menú */
+.header-line {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(75,85,99,0) 0%, rgba(251,211,77,0.8) 50%, rgba(75,85,99,0) 100%);
+}
+
+/* --- SECCIÓN HERO --- */
+.hero {
+    display: flex;
+    align-items: center;
+    padding: 60px;
+    gap: 50px;
+    background: radial-gradient(circle at right, #111a30 0%, #0b1121 100%);
+}
+
+.hero-image-container {
+    flex: 1;
+}
+
+.hero-image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.hero-content {
+    flex: 1;
+    padding-left: 20px;
+}
+
+.hero-content h1 {
+    font-size: 3.8rem;
+    line-height: 1.15;
+    margin-bottom: 40px;
+    font-weight: 600;
+}
+
+/* Barra de Búsqueda */
+.search-bar {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f8f6f0; /* Crema/Blanco */
+    padding: 6px 6px 6px 15px;
+    border-radius: 6px;
+    gap: 5px;
+}
+
+.search-bar input, .search-bar select {
+    border: none;
+    background: transparent;
+    padding: 10px;
+    font-size: 14px;
+    color: #1f2937;
+    outline: none;
+    min-width: 120px;
+}
+
+.divider {
+    color: #9ca3af;
+    font-size: 10px;
+}
+
+.btn-search {
+    background-color: #0b1121;
+    color: #fbd34d; /* Texto dorado */
+    border: none;
+    padding: 12px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Línea divisoria entre hero y cards */
+.section-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 0 60px;
+}
+
+/* Botón View All */
+.view-all-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.btn-view-all {
+    background-color: #fbd34d;
+    color: #0b1121;
+    border: none;
+    padding: 10px 40px;
+    border-radius: 30px; /* Forma de píldora */
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
