@@ -14,7 +14,6 @@ public class Inmueble {
     private Double precio;
     private String descripcion;
 
-    // Constructor vacío (requerido por Spring)
     public Inmueble() {
     }
 
@@ -24,7 +23,6 @@ public class Inmueble {
         this.descripcion = descripcion;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

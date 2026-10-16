@@ -18,8 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/registro", "/error").permitAll()
                         .requestMatchers("/vistas.html/admin.html").denyAll()
                         .requestMatchers(HttpMethod.GET, "/", "/propiedades/**", "/api/v1/propiedades/**",
-                                "/css/**", "/js/**", "/images/**", "/vistas.html/css/**",
-                                "/favicon.ico").permitAll()
+                                "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                         .requestMatchers(HttpMethod.POST, "/propiedades/*/visitas",
                                 "/api/v1/solicitudes-visita").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/inmuebles/**").hasRole("ADMIN")

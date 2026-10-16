@@ -52,8 +52,7 @@ public class AdminUserInitializer {
             }
 
             if (propiedadRepository.count() == 0) {
-                
-                // ==================== INMUEBLE DE PRUEBA 1 ====================
+               
                 Propiedad casa1 = new Propiedad();
                 casa1.setTitulo("Hermosa residencia urbana de estreno");
                 casa1.setPrecio(new BigDecimal("1250000"));
@@ -67,13 +66,13 @@ public class AdminUserInitializer {
                 casa1.setDescripcion("Una casa urbana moderna contemporánea de diseño minimalista.");
 
                 ImagenPropiedad img1 = new ImagenPropiedad();
-                img1.setUrl("inmueble1.jpg"); // Apunta a tu primera imagen física
+                img1.setUrl("inmueble1.jpg"); 
                 img1.setOrden(1);
                 casa1.agregarImagen(img1); 
 
                 propiedadRepository.save(casa1);
 
-                // ==================== INMUEBLE DE PRUEBA 2 ====================
+
                 Propiedad casa2 = new Propiedad();
                 casa2.setTitulo("Moderna casa minimalista con jardín");
                 casa2.setPrecio(new BigDecimal("10000"));
@@ -87,7 +86,7 @@ public class AdminUserInitializer {
                 casa2.setDescripcion("Hermoso inmueble con amplias áreas verdes y excelente iluminación.");
 
                 ImagenPropiedad img2 = new ImagenPropiedad();
-                img2.setUrl("inmueble2.jpg"); // Apunta a tu segunda imagen física sin duplicados
+                img2.setUrl("inmueble2.jpg"); 
                 img2.setOrden(1);
                 casa2.agregarImagen(img2); 
 
@@ -95,7 +94,7 @@ public class AdminUserInitializer {
                 
                 LOGGER.info("Base de datos H2 vacía. Se crearon exitosamente los 2 inmuebles de prueba únicos.");
 
-                // ==================== INMUEBLE DE PRUEBA 3 ====================
+                
                 Propiedad casa3 = new Propiedad();
                 casa3.setTitulo("Moderna casa minimalista con jardín");
                 casa3.setPrecio(new BigDecimal("10000"));
@@ -109,7 +108,7 @@ public class AdminUserInitializer {
                 casa3.setDescripcion("Hermoso inmueble con amplias áreas verdes y excelente iluminación.");
 
                 ImagenPropiedad img3 = new ImagenPropiedad();
-                img3.setUrl("inmueble3.webp"); // Apunta a tu tercera imagen física sin duplicados
+                img3.setUrl("inmueble3.webp"); 
                 img3.setOrden(1);
                 casa3.agregarImagen(img3); 
 
@@ -121,7 +120,6 @@ public class AdminUserInitializer {
 
 
             if (testimonioRepository.count() == 0) {
-                // Testimonio 1
                 Testimonio t1 = new Testimonio();
                 t1.setNombre("Carlos Mendoza");
                 t1.setUbicacion("San Isidro, Lima");
@@ -131,7 +129,6 @@ public class AdminUserInitializer {
                 t1.setActivo(true);
                 testimonioRepository.save(t1);
 
-                // Testimonio 2
                 Testimonio t2 = new Testimonio();
                 t2.setNombre("Ana María Rossi");
                 t2.setUbicacion("Miraflores, Lima");
