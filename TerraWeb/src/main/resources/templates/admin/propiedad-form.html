@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${propiedadId == null ? 'Nueva propiedad' : 'Editar propiedad'} + ' | P&amp;D Real Estate'">
+        Propiedad | P&amp;D Real Estate
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        background: "#090A0F",
+                        "surface-container-low": "#13141C",
+                        "surface-container": "#181A24",
+                        "surface-container-high": "#1E202E",
+                        "surface-container-highest": "#272935",
+                        "on-surface": "#f1f3f9",
+                        "on-surface-variant": "#9ca3af",
+                        "text-muted": "#717a8c",
+                        "accent-gold": "#FDE68A",
+                        error: "#ffb4ab"
+                    },
+                    fontFamily: { headline: ["Sora", "sans-serif"], body: ["Inter", "sans-serif"] }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { margin: 0; min-height: 100vh; background: #090A0F; }
+        input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, button:focus-visible {
+            outline: 2px solid #fde68a;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-background font-body text-on-surface antialiased">
+    <main class="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8">
+        <a class="mb-6 inline-flex items-center gap-2 text-sm text-on-surface-variant hover:text-accent-gold"
+            th:href="${returnTo}">
+            <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
+            Volver
+        </a>
+
+        <section class="overflow-hidden rounded-2xl border border-white/10 bg-surface-container-low shadow-2xl"
+            id="property-form-panel" aria-labelledby="property-form-title">
+            <header class="border-b border-white/10 px-6 py-6 sm:px-9">
+                <p class="mb-2 text-xs font-semibold text-accent-gold">Catálogo de propiedades</p>
+                <h1 class="font-headline text-2xl font-semibold sm:text-3xl" id="property-form-title"
+                    th:text="${propiedadId == null ? 'Registrar propiedad' : 'Editar propiedad'}">Registrar propiedad</h1>
+                <p class="mt-2 text-sm text-on-surface-variant">
+                    Completa los datos de la ficha y administra sus imágenes.
+                </p>
+            </header>
+
+            <form class="space-y-8 px-6 py-7 sm:px-9" method="post" enctype="multipart/form-data"
+                id="propertyEditorForm" th:action="@{${formAction}}" th:object="${propiedadForm}">
+                <input type="hidden" name="returnTo" th:value="${returnTo}">
+                <div class="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error"
+                    role="alert" th:if="${#fields.hasGlobalErrors()}">
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}">Error del formulario</p>
+                </div>
+
+                <section class="space-y-4" aria-labelledby="basic-info-title">
+                    <h2 class="font-headline text-lg font-semibold text-accent-gold" id="basic-info-title">
+                        Información de la propiedad
+                    </h2>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-sm font-medium" for="titulo">Título</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="titulo" type="text" required maxlength="180" th:field="*{titulo}">
+                            <p class="mt-1 text-sm text-error" th:errors="*{titulo}"></p>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="tipo">Tipo de inmueble</label>
+                            <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="tipo" th:field="*{tipo}">
+                                <option value="CASA">Casa</option>
+                                <option value="DEPARTAMENTO">Departamento</option>
+                                <option value="VILLA">Villa</option>
+                                <option value="PENTHOUSE">Penthouse</option>
+                                <option value="TERRENO">Terreno</option>
+                            </select>
+                            <p class="mt-1 text-sm text-error" th:errors="*{tipo}"></p>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="modalidad">Operación</label>
+                            <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="modalidad" th:field="*{modalidad}">
+                                <option value="Venta">Venta</option>
+                                <option value="Alquiler">Alquiler</option>
+                            </select>
+                            <p class="mt-1 text-sm text-error" th:errors="*{modalidad}"></p>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="moneda">Moneda</label>
+                            <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="moneda" th:field="*{moneda}">
+                                <option value="PEN">PEN - Soles</option>
+                                <option value="USD">USD - Dólares</option>
+                                <option value="EUR">EUR - Euros</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="precio">Precio</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="precio" type="number" min="0.01" step="0.01" required th:field="*{precio}">
+                            <p class="mt-1 text-sm text-error" th:errors="*{precio}"></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="space-y-4" aria-labelledby="location-title">
+                    <h2 class="font-headline text-lg font-semibold text-accent-gold" id="location-title">
+                        Ubicación y características
+                    </h2>
+                    <div class="grid gap-4 sm:grid-cols-3">
+                        <div class="sm:col-span-3">
+                            <label class="mb-1.5 block text-sm font-medium" for="direccion">Dirección</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="direccion" type="text" maxlength="255" th:field="*{direccion}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="distrito">Distrito</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="distrito" type="text" maxlength="120" th:field="*{distrito}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="ciudad">Ciudad</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="ciudad" type="text" maxlength="120" th:field="*{ciudad}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="estado">Estado</label>
+                            <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="estado" th:field="*{estado}">
+                                <option value="DISPONIBLE">Disponible</option>
+                                <option value="RESERVADA">Reservada</option>
+                                <option value="EN_REVISION">En revisión</option>
+                                <option value="VENDIDA">Vendida</option>
+                                <option value="RETIRADA">Retirada</option>
+                            </select>
+                            <p class="mt-1 text-sm text-error" th:errors="*{estado}"></p>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="habitaciones">Habitaciones</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="habitaciones" type="number" min="0" th:field="*{habitaciones}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="banos">Baños</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="banos" type="number" min="0" th:field="*{banos}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="cocheras">Cocheras</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="cocheras" type="number" min="0" th:field="*{cocheras}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="areaConstruida">Área construida (m²)</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="areaConstruida" type="number" min="0" step="0.01" th:field="*{areaConstruida}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="areaTotal">Área total (m²)</label>
+                            <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="areaTotal" type="number" min="0" step="0.01" th:field="*{areaTotal}">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium" for="agenteId">Agente asignado</label>
+                            <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                                id="agenteId" th:field="*{agenteId}">
+                                <option value="">Sin asignar</option>
+                                <option th:each="agente : ${agentes}"
+                                    th:value="${agente.id}"
+                                    th:text="|${agente.nombre} · ${agente.cargo}${agente.activo ? '' : ' (Inactivo)'}|">
+                                    Agente
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="space-y-4" aria-labelledby="images-title">
+                    <h2 class="font-headline text-lg font-semibold text-accent-gold" id="images-title">
+                        Imágenes con carga múltiple y galería
+                    </h2>
+                    <div class="rounded-xl border border-white/10 bg-background p-5">
+                        <p class="text-sm text-on-surface-variant">
+                            La galería admite hasta 10 imágenes JPG, PNG o WEBP (máximo 15 MB cada una).
+                            Las fotos nuevas se agregan a las conservadas.
+                        </p>
+                        <input class="mt-4 block w-full text-sm text-on-surface-variant file:mr-4 file:rounded-full file:border-0 file:bg-accent-gold file:px-5 file:py-2.5 file:font-semibold file:text-background"
+                            id="imagenes" type="file" name="imagenes" accept="image/jpeg,image/png,image/webp"
+                            multiple>
+                        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+                            th:if="${!#lists.isEmpty(imagenesGuardadas)}">
+                            <article class="relative overflow-hidden rounded-xl border border-white/10 bg-surface-container"
+                                th:each="imagen, iterStat : ${imagenesGuardadas}">
+                                <input class="sr-only guardar-imagen-checkbox" type="checkbox"
+                                    name="imagenesConservar" th:value="${imagen.id}"
+                                    th:checked="${#lists.contains(imagenesConservar, imagen.id)}"
+                                    aria-hidden="true" tabindex="-1">
+                                <img class="h-36 w-full object-cover" th:src="${imagen.url}"
+                                    th:alt="${imagen.textoAlternativo == null ? 'Imagen de propiedad' : imagen.textoAlternativo}">
+                                <span class="absolute left-2 top-2 rounded-full bg-accent-gold px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-background"
+                                    th:classappend="${!iterStat.first} ? ' hidden' : ''"
+                                    data-cover-label>Portada</span>
+                                <button class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/75 text-sm font-bold text-white hover:bg-error"
+                                    type="button" data-remove-image aria-label="Quitar imagen">X</button>
+                                <p class="px-3 py-2 text-xs text-on-surface-variant"
+                                    th:text="|Foto ${iterStat.count}|">Foto</p>
+                            </article>
+                        </div>
+                        <p class="mt-4 text-xs text-on-surface-variant"
+                            th:if="${#lists.isEmpty(imagenesGuardadas)}">Todavía no hay fotos guardadas.</p>
+                    </div>
+                </section>
+
+                <section class="space-y-4" aria-labelledby="description-title">
+                    <h2 class="font-headline text-lg font-semibold text-accent-gold" id="description-title">
+                        Descripción y publicación
+                    </h2>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="descripcion">Descripción</label>
+                        <textarea class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="descripcion" rows="5" th:field="*{descripcion}"></textarea>
+                    </div>
+                    <label class="flex items-center gap-3 text-sm">
+                        <input class="h-4 w-4 accent-accent-gold" type="checkbox" th:field="*{publicada}">
+                        Publicar esta propiedad en el sitio web
+                    </label>
+                </section>
+
+                <footer class="flex flex-col-reverse gap-3 border-t border-white/10 pt-6 sm:flex-row sm:justify-end">
+                    <a class="property-form-cancel inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold hover:bg-white/5"
+                        th:href="${returnTo}">Cancelar</a>
+                    <button class="inline-flex items-center justify-center gap-2 rounded-full bg-accent-gold px-7 py-3 text-sm font-bold text-background hover:brightness-105"
+                        type="submit">
+                        <span class="material-symbols-outlined text-lg" aria-hidden="true">save</span>
+                        Guardar propiedad
+                    </button>
+                </footer>
+            </form>
+        </section>
+    </main>
+    <script>
+        const refreshCover = () => {
+            const cards = [...document.querySelectorAll(".guardar-imagen-checkbox")]
+                .map((checkbox) => checkbox.closest("article"));
+            const firstSaved = cards.find((card) => card.querySelector(".guardar-imagen-checkbox").checked);
+            cards.forEach((card) => {
+                const badge = card.querySelector("[data-cover-label]");
+                badge.classList.toggle("hidden", card !== firstSaved);
+            });
+        };
+
+        document.querySelectorAll("[data-remove-image]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const card = button.closest("article");
+                const checkbox = card.querySelector(".guardar-imagen-checkbox");
+                checkbox.checked = !checkbox.checked;
+                card.classList.toggle("opacity-40", !checkbox.checked);
+                button.textContent = checkbox.checked ? "X" : "+";
+                button.setAttribute("aria-label", checkbox.checked ? "Quitar imagen" : "Conservar imagen");
+                refreshCover();
+            });
+        });
+        refreshCover();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administración | P&amp;D Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Sora:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        background: "#121318",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface-container-low": "#1a1b21",
+                        "surface-container": "#1e1f25",
+                        "surface-container-high": "#292a2f",
+                        "surface-container-highest": "#34343a",
+                        "on-surface": "#e3e1e9",
+                        "on-surface-variant": "#dbc2b0",
+                        "text-muted": "#94a3b8",
+                        primary: "#ffb77d",
+                        "accent-gold": "#fde68a"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Sora", "sans-serif"],
+                        "headline-sm": ["Sora", "sans-serif"],
+                        "label-md": ["Sora", "sans-serif"],
+                        "label-sm": ["Sora", "sans-serif"]
+                    },
+                    fontSize: {
+                        "headline-md": ["36px", { lineHeight: "42px", letterSpacing: "-0.03em", fontWeight: "600" }],
+                        "headline-sm": ["24px", { lineHeight: "30px", letterSpacing: "-0.02em", fontWeight: "600" }],
+                        "body-md": ["15px", { lineHeight: "24px" }],
+                        "body-sm": ["13px", { lineHeight: "20px" }],
+                        "label-md": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+                        "label-sm": ["11px", { lineHeight: "16px", fontWeight: "600" }]
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            overscroll-behavior: none;
+        }
+
+        .admin-sidebar {
+            width: 18rem;
+        }
+
+        .admin-content {
+            padding-left: 18rem;
+        }
+
+        .admin-header {
+            left: 18rem;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        summary:focus-visible {
+            outline: 2px solid #fde68a;
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 900px) {
+            .admin-sidebar {
+                position: static;
+                width: auto;
+                height: auto;
+                min-height: 0;
+                padding: 1rem;
+            }
+
+            .admin-nav {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: .5rem;
+            }
+
+            .admin-sidebar-bottom {
+                display: flex;
+                align-items: center;
+                gap: .75rem;
+                margin-top: 1rem;
+            }
+
+            .admin-sidebar-bottom form {
+                margin-left: auto;
+            }
+
+            .admin-sidebar-bottom a {
+                display: inline-flex;
+            }
+
+            .admin-content {
+                padding-left: 0;
+            }
+
+            .admin-header {
+                position: static;
+                left: auto;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased">
+    <aside class="admin-sidebar fixed inset-y-0 left-0 z-50 flex flex-col justify-between bg-surface-container-lowest py-6"
+        aria-label="Navegación administrativa">
+        <div class="flex flex-col">
+            <a class="mb-8 flex items-center gap-3 px-8 py-2 text-on-surface no-underline" th:href="@{/admin}">
+                <span class="flex h-8 w-8 items-center justify-center rounded bg-surface-container-high font-label-md text-label-md tracking-widest text-accent-gold"
+                    aria-hidden="true">PD</span>
+                <span class="flex flex-col">
+                    <span class="font-label-md text-label-md tracking-wide">P&amp;D REAL ESTATE</span>
+                    <span class="font-label-sm text-label-sm tracking-wider text-text-muted">Administración</span>
+                </span>
+            </a>
+            <div class="mb-6 px-6">
+                <a class="flex w-full items-center justify-center gap-2 rounded-full bg-accent-gold px-6 py-3 font-label-md text-label-md text-background transition-opacity hover:opacity-90"
+                    th:href="@{/admin/propiedades/nueva}">
+                    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+                    Nueva propiedad
+                </a>
+            </div>
+            <nav class="admin-nav flex flex-col gap-1 px-4" aria-label="Secciones del panel">
+                <a class="flex items-center gap-3 rounded-lg bg-surface-container-high px-4 py-3 font-semibold text-on-surface"
+                    href="#resumen" aria-current="page">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">dashboard</span>Resumen
+                </a>
+                <a class="flex items-center gap-3 rounded-lg px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+                    href="#propiedades">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">apartment</span>Propiedades
+                </a>
+                <a class="flex items-center gap-3 rounded-lg px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+                    href="#solicitudes">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">mark_email_unread</span>Solicitudes
+                </a>
+                <a class="flex items-center gap-3 rounded-lg px-4 py-3 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+                    href="#agentes">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">badge</span>Agentes
+                </a>
+            </nav>
+        </div>
+        <div class="admin-sidebar-bottom px-6">
+            <form method="post" th:action="@{/logout}">
+                <button class="w-full rounded-full border border-surface-container-highest px-5 py-2.5 font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-container-high"
+                    type="submit">Cerrar sesión</button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="admin-content min-h-screen">
+        <header class="admin-header fixed right-0 top-0 z-40 flex h-16 items-center justify-between bg-surface-container-lowest/90 px-8 backdrop-blur-xl">
+            <span class="font-label-md text-label-md text-on-surface">Panel de administración</span>
+            <a class="flex h-9 w-9 items-center justify-center rounded-full bg-accent-gold/20 text-accent-gold"
+                href="#resumen" aria-label="Volver al resumen">
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
+            </a>
+        </header>
+
+        <main class="min-h-screen bg-background pt-16">
+            <div class="flex w-full flex-col gap-10 px-6 py-10 lg:px-12">
+                <section id="resumen" class="scroll-mt-20">
+                    <div class="mb-7 flex flex-wrap items-end justify-between gap-5">
+                        <div class="flex max-w-2xl flex-col gap-2">
+                            <span class="font-label-sm text-label-sm text-text-muted">P&amp;D Signature</span>
+                            <h1 class="font-headline-md text-headline-md tracking-tight text-on-surface">Panel de Administración</h1>
+                            <p class="max-w-xl text-body-md text-text-muted">Gestiona las propiedades, los agentes y las solicitudes desde un solo lugar.</p>
+                        </div>
+                        <a class="inline-flex items-center gap-2 rounded-full bg-accent-gold px-6 py-2.5 font-label-md text-label-md text-background transition-opacity hover:opacity-90"
+                            th:href="@{/admin/propiedades/nueva}">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+                            Nueva propiedad
+                        </a>
+                    </div>
+
+                    <div class="mb-6 rounded-xl border border-primary/30 bg-surface-container-low px-5 py-4 text-body-sm text-on-surface"
+                        role="status" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                        <article class="flex min-h-36 flex-col justify-between rounded-xl bg-surface-container-low p-6">
+                            <span class="font-label-sm text-label-sm text-text-muted">Propiedades en catálogo</span>
+                            <span class="font-headline-sm text-headline-sm text-on-surface"
+                                th:text="${#lists.size(dashboard.propiedades)}">0</span>
+                        </article>
+                        <article class="flex min-h-36 flex-col justify-between rounded-xl bg-surface-container-low p-6">
+                            <span class="font-label-sm text-label-sm text-text-muted">Propiedades publicadas</span>
+                            <span class="font-headline-sm text-headline-sm text-on-surface"
+                                th:text="${dashboard.propiedadesPublicadas}">0</span>
+                        </article>
+                        <article class="flex min-h-36 flex-col justify-between rounded-xl bg-surface-container-low p-6">
+                            <span class="font-label-sm text-label-sm text-text-muted">Agentes activos</span>
+                            <span class="font-headline-sm text-headline-sm text-on-surface"
+                                th:text="${dashboard.agentesActivos}">0</span>
+                        </article>
+                        <article class="flex min-h-36 flex-col justify-between rounded-xl bg-surface-container-low p-6">
+                            <span class="font-label-sm text-label-sm text-text-muted">Solicitudes pendientes</span>
+                            <span class="font-headline-sm text-headline-sm text-on-surface"
+                                th:text="${dashboard.solicitudesPendientes}">0</span>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="propiedades" class="scroll-mt-20">
+                    <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface">Gestión de propiedades</h2>
+                            <p class="mt-1 text-body-sm text-text-muted">Propiedades registradas en el catálogo.</p>
+                        </div>
+                        <a class="inline-flex items-center gap-2 rounded-full bg-accent-gold px-5 py-2.5 font-label-md text-label-md text-background transition-opacity hover:opacity-90"
+                            th:href="@{/admin/propiedades/nueva}">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+                            Nueva propiedad
+                        </a>
+                    </div>
+                    <div class="overflow-hidden rounded-xl bg-surface-container-low">
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse text-left">
+                                <thead class="bg-surface-container-lowest/50">
+                                    <tr class="font-label-sm text-label-sm text-text-muted">
+                                        <th class="px-5 py-4 font-semibold">Propiedad</th>
+                                        <th class="px-5 py-4 font-semibold">Precio</th>
+                                        <th class="px-5 py-4 font-semibold">Ubicación</th>
+                                        <th class="px-5 py-4 font-semibold">Agente</th>
+                                        <th class="px-5 py-4 font-semibold">Estado</th>
+                                        <th class="px-5 py-4 text-right font-semibold">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-surface-container-highest/30 text-body-sm">
+                                    <tr class="transition-colors hover:bg-surface-container/50"
+                                        th:each="propiedad : ${dashboard.propiedades}">
+                                        <td class="px-5 py-4">
+                                            <div class="flex min-w-56 items-center gap-3">
+                                                <img class="h-12 w-16 shrink-0 rounded object-cover"
+                                                    th:if="${!#lists.isEmpty(propiedad.imagenes)}"
+                                                    th:src="${propiedad.imagenes[0].url}"
+                                                    th:alt="${propiedad.imagenes[0].textoAlternativo}">
+                                                <span class="flex h-12 w-16 shrink-0 items-center justify-center rounded bg-surface-container-high text-text-muted"
+                                                    th:if="${#lists.isEmpty(propiedad.imagenes)}">
+                                                    <span class="material-symbols-outlined" aria-hidden="true">home</span>
+                                                </span>
+                                                <span class="min-w-0">
+                                                    <span class="block truncate font-label-md text-label-md text-on-surface"
+                                                        th:text="${propiedad.titulo}">Propiedad</span>
+                                                    <span class="text-text-muted" th:text="|ID ${propiedad.id}|">ID</span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-5 py-4"
+                                            th:text="|${propiedad.moneda} ${#numbers.formatDecimal(propiedad.precio, 1, 'COMMA', 0, 'POINT')}|">Precio</td>
+                                        <td class="px-5 py-4" th:text="|${propiedad.distrito}, ${propiedad.ciudad}|">Ubicación</td>
+                                        <td class="px-5 py-4">
+                                            <span th:text="${propiedad.agente != null ? propiedad.agente.nombre : 'Sin asignar'}">Agente</span>
+                                        </td>
+                                        <td class="px-5 py-4">
+                                            <span class="rounded-full bg-surface-container-high px-3 py-1 text-label-sm"
+                                                th:text="${propiedad.publicada ? 'Publicada' : propiedad.estado}">Estado</span>
+                                        </td>
+                                        <td class="whitespace-nowrap px-5 py-4 text-right">
+                                            <div class="inline-flex items-center gap-2">
+                                                <a class="rounded-full border border-surface-container-highest px-3 py-1.5 text-label-sm text-on-surface transition-colors hover:bg-surface-container-high"
+                                                    th:href="@{/admin/propiedades/{id}/editar(id=${propiedad.id})}">Editar</a>
+                                                <form method="post"
+                                                    th:action="@{/admin/propiedades/{id}/eliminar(id=${propiedad.id})}"
+                                                    onsubmit="return confirm('¿Retirar esta propiedad del catálogo? Se conservará su historial.');">
+                                                    <button class="rounded-full border border-surface-container-highest px-3 py-1.5 text-label-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
+                                                        type="submit" th:disabled="${!propiedad.publicada}">Retirar</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(dashboard.propiedades)}">
+                                        <td class="px-5 py-10 text-center text-text-muted" colspan="6">
+                                            Todavía no hay propiedades. Usa «Nueva propiedad» para registrar la primera.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 items-start gap-8 xl:grid-cols-2">
+                    <section id="solicitudes" class="scroll-mt-20 rounded-xl bg-surface-container-low p-6">
+                        <div class="mb-5 flex items-center justify-between gap-3">
+                            <div>
+                                <h2 class="font-headline-sm text-headline-sm text-on-surface">Solicitudes y visitas</h2>
+                                <p class="mt-1 text-body-sm text-text-muted">Solicitudes activas recientes.</p>
+                            </div>
+                            <span class="rounded-full bg-surface-container-high px-3 py-1 font-label-sm text-label-sm text-text-muted"
+                                th:text="${dashboard.solicitudesPendientes}">0</span>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <article class="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-surface-container p-4"
+                                th:each="solicitud : ${dashboard.solicitudesActivas}">
+                                <div class="min-w-0">
+                                    <p class="font-label-md text-label-md text-on-surface" th:text="${solicitud.nombre}">Cliente</p>
+                                    <p class="mt-1 text-body-sm text-text-muted" th:text="${solicitud.tituloPropiedad}">Propiedad</p>
+                                    <p class="mt-1 text-body-sm text-text-muted">
+                                        <span th:text="${solicitud.fechaEstimada}">Fecha</span>
+                                        <span aria-hidden="true"> · </span>
+                                        <a class="hover:text-accent-gold" th:href="|mailto:${solicitud.correo}|"
+                                            th:text="${solicitud.correo}">Correo</a>
+                                        <span aria-hidden="true"> · </span>
+                                        <a class="hover:text-accent-gold" th:href="|tel:${solicitud.telefono}|"
+                                            th:text="${solicitud.telefono}">Teléfono</a>
+                                    </p>
+                                </div>
+                                <form method="post" th:action="@{/admin/solicitudes/{id}/archivar(id=${solicitud.id})}">
+                                    <button class="rounded-full border border-surface-container-highest px-4 py-2 font-label-sm text-label-sm text-on-surface transition-colors hover:bg-surface-container-high"
+                                        type="submit">Archivar</button>
+                                </form>
+                            </article>
+                            <p class="rounded-lg bg-surface-container p-5 text-center text-body-sm text-text-muted"
+                                th:if="${#lists.isEmpty(dashboard.solicitudesActivas)}">
+                                No hay solicitudes activas.
+                            </p>
+                        </div>
+                        <details class="mt-5 border-t border-surface-container-highest/50 pt-4">
+                            <summary class="cursor-pointer font-label-sm text-label-sm text-text-muted">
+                                Solicitudes archivadas (<span th:text="${#lists.size(dashboard.solicitudesArchivadas)}">0</span> recientes)
+                            </summary>
+                            <div class="mt-4 flex flex-col gap-3">
+                                <article class="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-surface-container p-4"
+                                    th:each="solicitud : ${dashboard.solicitudesArchivadas}">
+                                    <div class="min-w-0">
+                                        <p class="font-label-md text-label-md text-on-surface" th:text="${solicitud.nombre}">Cliente</p>
+                                        <p class="mt-1 text-body-sm text-text-muted" th:text="${solicitud.tituloPropiedad}">Propiedad</p>
+                                        <p class="mt-1 text-body-sm text-text-muted">
+                                            <span th:text="${solicitud.fechaEstimada}">Fecha</span>
+                                            <span aria-hidden="true"> · </span>
+                                            <span th:text="${solicitud.correo}">Correo</span>
+                                        </p>
+                                    </div>
+                                    <form method="post" th:action="@{/admin/solicitudes/{id}/restaurar(id=${solicitud.id})}">
+                                        <button class="rounded-full border border-surface-container-highest px-4 py-2 font-label-sm text-label-sm text-on-surface transition-colors hover:bg-surface-container-high"
+                                            type="submit">Restaurar</button>
+                                    </form>
+                                </article>
+                                <p class="text-body-sm text-text-muted" th:if="${#lists.isEmpty(dashboard.solicitudesArchivadas)}">
+                                    No hay solicitudes archivadas.
+                                </p>
+                            </div>
+                        </details>
+                    </section>
+
+                    <section id="agentes" class="scroll-mt-20 rounded-xl bg-surface-container-low p-6">
+                        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h2 class="font-headline-sm text-headline-sm text-on-surface">Agentes</h2>
+                                <p class="mt-1 text-body-sm text-text-muted">Directorio del equipo inmobiliario.</p>
+                            </div>
+                            <a class="inline-flex items-center gap-2 rounded-full bg-accent-gold px-4 py-2 font-label-sm text-label-sm text-background transition-opacity hover:opacity-90"
+                                th:href="@{/admin/agentes/nuevo}">
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+                                Nuevo agente
+                            </a>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <article class="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-surface-container p-4"
+                                th:each="agente : ${dashboard.agentes}">
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <img class="h-11 w-11 rounded-full object-cover"
+                                        th:if="${agente.fotoUrl != null and !#strings.isEmpty(agente.fotoUrl)}"
+                                        th:src="${agente.fotoUrl}" th:alt="${agente.nombre}">
+                                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-highest text-accent-gold"
+                                        th:unless="${agente.fotoUrl != null and !#strings.isEmpty(agente.fotoUrl)}">
+                                        <span class="material-symbols-outlined" aria-hidden="true">person</span>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <p class="truncate font-label-md text-label-md text-on-surface" th:text="${agente.nombre}">Agente</p>
+                                        <p class="text-body-sm text-text-muted" th:text="${agente.cargo}">Cargo</p>
+                                        <p class="text-body-sm text-text-muted" th:text="${agente.telefono}">Teléfono</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="rounded-full bg-surface-container-high px-3 py-1 text-label-sm text-text-muted"
+                                        th:text="${agente.activo ? 'Activo' : 'Inactivo'}">Activo</span>
+                                    <a class="rounded-full border border-surface-container-highest px-3 py-1.5 text-label-sm text-on-surface transition-colors hover:bg-surface-container-high"
+                                        th:href="@{/admin/agentes/{id}/editar(id=${agente.id})}">Editar</a>
+                                    <form method="post" th:action="@{/admin/agentes/{id}/eliminar(id=${agente.id})}"
+                                        onsubmit="return confirm('¿Eliminar este agente? Las propiedades quedarán sin agente asignado.');">
+                                        <button class="rounded-full border border-surface-container-highest px-3 py-1.5 text-label-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
+                                            type="submit">Eliminar</button>
+                                    </form>
+                                </div>
+                            </article>
+                            <p class="rounded-lg bg-surface-container p-5 text-center text-body-sm text-text-muted"
+                                th:if="${#lists.isEmpty(dashboard.agentes)}">
+                                Todavía no hay agentes registrados. Usa «Nuevo agente» para añadir uno.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

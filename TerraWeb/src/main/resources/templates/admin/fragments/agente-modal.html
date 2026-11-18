@@ -1,0 +1,48 @@
+<dialog th:fragment="agentModal" id="agentModal" class="admin-modal w-[min(94vw,680px)] rounded-2xl p-0">
+    <form id="agentCreateForm" class="space-y-5 p-6" method="post" enctype="multipart/form-data" th:action="@{/admin/agentes}">
+        <div class="flex items-center justify-between gap-3">
+            <div>
+                <h2 class="font-headline text-xl font-semibold">Nuevo agente</h2>
+                <p class="mt-1 text-sm text-on-surface-variant">Completa los datos del asesor y define su disponibilidad.</p>
+            </div>
+            <button class="button-secondary icon-button" id="closeAgentModal" type="button" aria-label="Cerrar formulario" title="Cerrar">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+        </div>
+        <div class="flex items-center gap-4 rounded-xl border border-white/10 bg-surface-container p-4">
+            <img id="agentAvatarPreview" class="h-16 w-16 rounded-full object-cover" alt="Vista previa del avatar" hidden>
+            <span id="agentAvatarFallback" class="flex h-16 w-16 items-center justify-center rounded-full bg-surface-container-high text-accent-gold">
+                <span class="material-symbols-outlined text-3xl" aria-hidden="true">person</span>
+            </span>
+            <div>
+                <p class="font-medium">Foto de perfil</p>
+                <p class="mt-1 text-xs text-on-surface-variant">JPG, PNG o WEBP, hasta 15 MB.</p>
+                <button class="button-secondary mt-2 rounded-lg px-3 py-1.5 text-xs" id="agentPhotoTrigger" type="button">Seleccionar foto</button>
+            </div>
+        </div>
+        <input class="sr-only" id="agentPhotoInput" name="foto" type="file" accept="image/jpeg,image/png,image/webp">
+        <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block text-sm">Nombre completo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="nombre" maxlength="120" required></label>
+            <label class="block text-sm">Correo electrónico<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="correo" type="email" maxlength="180" required></label>
+            <label class="block text-sm">Cargo<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="cargo" required><option value="Director Asociado">Director asociado</option><option value="Asesor Comercial Senior">Asesor comercial senior</option><option value="Especialista Fiduciario">Especialista fiduciario</option><option value="Asesor Junior">Asesor junior</option></select></label>
+            <label class="block text-sm">Especialidad<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="especialidad" required><option value="Casas exclusivas y residencias">Casas exclusivas y residencias</option><option value="Departamentos y penthouses">Departamentos y penthouses</option><option value="Alquileres corporativos">Alquileres corporativos</option><option value="Inversiones y terrenos">Inversiones y terrenos</option></select></label>
+            <label class="block text-sm">Teléfono directo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="telefono" type="tel" maxlength="25" required></label>
+            <label class="block text-sm">WhatsApp comercial<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="whatsapp" type="tel" maxlength="25"></label>
+        </div>
+        <fieldset class="space-y-2">
+            <legend class="text-sm font-medium">Disponibilidad</legend>
+            <input type="hidden" id="agentStatusValue" name="estado" value="DISPONIBLE">
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Estado del agente">
+                <button class="agent-status-option rounded-lg border px-3 py-2 text-sm" type="button" data-agent-status="DISPONIBLE" aria-pressed="true">Disponible</button>
+                <button class="agent-status-option rounded-lg border px-3 py-2 text-sm" type="button" data-agent-status="INDUCCION" aria-pressed="false">En inducción</button>
+                <button class="agent-status-option rounded-lg border px-3 py-2 text-sm" type="button" data-agent-status="PAUSA" aria-pressed="false">En pausa</button>
+            </div>
+        </fieldset>
+        <input type="hidden" name="activo" value="true">
+        <p class="text-sm text-red-300" data-form-error role="alert"></p>
+        <div class="flex justify-end gap-3 border-t border-white/10 pt-4">
+            <button class="button-secondary rounded-lg px-4 py-2" type="button" data-close-modal="agentModal">Cancelar</button>
+            <button class="button-primary rounded-lg px-4 py-2 font-semibold" type="submit">Guardar agente</button>
+        </div>
+    </form>
+</dialog>

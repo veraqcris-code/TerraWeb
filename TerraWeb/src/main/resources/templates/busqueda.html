@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" th:content="${_csrf.token}">
+  <meta name="csrf-header" th:content="${_csrf.headerName}">
+  <title>Propiedades disponibles | P&amp;D Real Estate Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/inicio.css}">
+  <style>
+    :root {
+      --catalog-bg: #090A0F;
+      --catalog-card: #13141C;
+      --catalog-gold: #FDE68A;
+      --catalog-text: #F3F4F6;
+      --catalog-muted: #A0A5B2;
+      --catalog-line: rgba(255, 255, 255, .1);
+    }
+    html { overflow-y: scroll; }
+    html, body { min-height: 100%; background: var(--catalog-bg); color: var(--catalog-text); }
+    body { font-family: "Plus Jakarta Sans", sans-serif; }
+    .font-sora { font-family: Sora, sans-serif; }
+    .site-header {
+      background: rgba(9, 10, 15, .95);
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      backdrop-filter: blur(12px);
+    }
+    .site-header .nav-pill {
+      gap: 2rem !important;
+      padding: .6rem 1.5rem;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 999px;
+      background: #13141C;
+    }
+    .site-header .nav-link {
+      padding: .35rem 0;
+      color: #E3E1E9;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .site-header .nav-link:hover, .site-header .nav-link.active { color: var(--catalog-gold); }
+    .site-header .nav-link:focus-visible, .catalog-page a:focus-visible,
+    .catalog-page button:focus-visible, .catalog-page select:focus-visible {
+      outline: 2px solid var(--catalog-gold);
+      outline-offset: 3px;
+    }
+    .catalog-page { padding-top: 5rem; }
+    .catalog-hero {
+      padding: 4.75rem 0 2rem;
+      background: linear-gradient(180deg, #090A0F 0%, #0E1017 100%);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--catalog-gold);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      width: .42rem;
+      height: .42rem;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+    .catalog-title { max-width: none; font-size: clamp(1.875rem, 3vw, 2.25rem); line-height: 1.15; }
+    .catalog-intro { max-width: none; color: var(--catalog-muted); line-height: 1.75; }
+    .filter-panel {
+      padding: 1rem;
+      border: 1px solid var(--catalog-line);
+      border-radius: 1rem;
+      background: var(--catalog-card);
+    }
+    .filter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: .75rem; }
+    .filter-control { min-width: 0; }
+    .filter-control label {
+      display: block;
+      margin: 0 0 .45rem .15rem;
+      color: var(--catalog-muted);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .filter-control select {
+      width: 100%;
+      height: 3rem;
+      padding: 0 .85rem;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: .6rem;
+      background: #1A1C27;
+      color: var(--catalog-text);
+      font: inherit;
+      font-size: .84rem;
+    }
+    .filter-control select option { background: #1A1C27; color: var(--catalog-text); }
+    .btn-gold {
+      align-self: end;
+      min-height: 3rem;
+      padding: .7rem 1.25rem;
+      border: 0;
+      border-radius: .6rem;
+      background: var(--catalog-gold);
+      color: #090A0C;
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .btn-gold:hover { background: #FEF0AE; color: #090A0C; }
+    .results-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-top: 1.25rem; }
+    .results-copy { margin: 0; color: var(--catalog-muted); font-size: .9rem; }
+    .results-copy strong { color: var(--catalog-text); font-weight: 700; }
+    .sort-control { display: flex; align-items: center; gap: .65rem; color: var(--catalog-muted); font-size: .72rem; white-space: nowrap; }
+    .sort-control select {
+      padding: .5rem .75rem;
+      border: 1px solid var(--catalog-line);
+      border-radius: .55rem;
+      background: #13141C;
+      color: var(--catalog-text);
+      font: inherit;
+      font-size: .8rem;
+    }
+    .active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; padding-top: .9rem; }
+    .filter-chip {
+      padding: .35rem .7rem;
+      border: 1px solid rgba(253, 230, 138, .25);
+      border-radius: 999px;
+      background: #1A1C27;
+      color: #FDE68A;
+      font-size: .72rem;
+    }
+    .clear-filters {
+      padding: .35rem .2rem;
+      border: 0;
+      background: none;
+      color: var(--catalog-muted);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .clear-filters:hover { color: var(--catalog-gold); }
+    .catalog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .listing-card {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: .9rem;
+      background: var(--catalog-card);
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .listing-card:hover { transform: translateY(-3px); border-color: rgba(253, 230, 138, .35); }
+    .listing-image { position: relative; height: 250px; overflow: hidden; background: #1A1C27; }
+    .listing-image > img { width: 100%; height: 100%; object-fit: cover; }
+    .listing-placeholder { display: grid; width: 100%; height: 100%; place-items: center; color: #828999; }
+    .listing-placeholder svg { width: 3.25rem; height: 3.25rem; }
+    .listing-badges { position: absolute; top: .9rem; left: .9rem; display: flex; gap: .5rem; }
+    .listing-badge {
+      padding: .42rem .65rem;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 999px;
+      background: rgba(9, 10, 15, .82);
+      color: var(--catalog-gold);
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+    }
+    .listing-badge.reserved { color: #FCD34D; }
+    .favorite-button {
+      position: absolute;
+      top: .8rem;
+      right: .8rem;
+      display: grid;
+      width: 2.45rem;
+      height: 2.45rem;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 50%;
+      background: rgba(9, 10, 15, .8);
+      color: #F3F4F6;
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .favorite-button[aria-pressed="true"] {
+      color: var(--catalog-gold);
+    }
+    .favorite-button svg {
+      display: block;
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+    .favorite-button svg path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .favorite-button[aria-pressed="true"] svg path {
+      fill: #FDE68A !important;
+      stroke: #FDE68A !important;
+    }
+    .listing-body { display: flex; min-height: 250px; flex-direction: column; padding: 1.2rem; }
+    .listing-price { margin: 0 0 .55rem; color: white; font: 700 1.25rem/1.3 Sora, sans-serif; }
+    .listing-title { margin: 0 0 .35rem; color: #F4F4F5; font: 600 1rem/1.45 Sora, sans-serif; }
+    .listing-location { min-height: 2.6rem; margin: 0; color: var(--catalog-muted); font-size: .8rem; line-height: 1.6; }
+    .listing-specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin: auto 0 1rem; padding: 1rem 0 .8rem; border-top: 1px solid var(--catalog-line); }
+    .listing-spec { color: var(--catalog-text); font-size: .86rem; font-weight: 700; }
+    .listing-spec small { display: block; margin-top: .3rem; color: var(--catalog-muted); font-size: .62rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .listing-cta {
+      display: flex;
+      min-height: 2.9rem;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      border-radius: .55rem;
+      background: var(--catalog-gold);
+      color: #090A0C;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-decoration: none;
+    }
+    .listing-cta:hover { background: #FEF0AE; color: #090A0C; }
+    .empty-state {
+      padding: 3.5rem 1.5rem;
+      border: 1px solid var(--catalog-line);
+      border-radius: .9rem;
+      background: var(--catalog-card);
+      color: var(--catalog-muted);
+      text-align: center;
+    }
+    .empty-state h2 { color: white; font: 600 1.2rem Sora, sans-serif; }
+    .pagination { display: flex; justify-content: center; gap: .45rem; margin: 2rem 0 3.5rem; }
+    .page-link {
+      display: grid;
+      min-width: 2.7rem;
+      height: 2.7rem;
+      place-items: center;
+      border: 1px solid var(--catalog-line);
+      border-radius: .6rem;
+      background: #13141C;
+      color: var(--catalog-muted);
+      font-size: .85rem;
+      padding: 0;
+      text-decoration: none;
+    }
+    .page-link:hover { border-color: var(--catalog-gold); color: var(--catalog-gold); }
+    .page-link.active { border-color: var(--catalog-gold); background: var(--catalog-gold); color: #090A0C; font-weight: 800; }
+    #advisory-panel {
+      display: flex;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 1.5rem !important;
+      margin: 0 0 4rem;
+      padding: 2rem;
+      border: 1px solid var(--catalog-line);
+      border-radius: 1rem;
+      background: #13141C;
+    }
+    @media (min-width: 768px) {
+      #advisory-panel {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+    }
+    #advisory-panel > div { flex: 1 1 auto; }
+    #advisory-panel h2 { margin: 0 0 .55rem; color: white; font: 600 1.25rem Sora, sans-serif; }
+    #advisory-panel p { max-width: 45rem; margin: 0; color: var(--catalog-muted); line-height: 1.7; }
+    #advisory-panel .advisory-cta {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+      min-height: 3.5rem;
+      text-align: center;
+      line-height: 1;
+      padding: .875rem 1.5rem;
+      text-decoration: none;
+      white-space: nowrap;
+      border-radius: .6rem;
+    }
+    .site-footer { background: #07080C; }
+    .site-footer h4 { color: white; font: 600 1rem Sora, sans-serif; }
+    .site-footer .footer-link { color: rgba(255, 255, 255, .58); font-size: .8rem; text-decoration: none; }
+    .site-footer .footer-link:hover { color: var(--catalog-gold); }
+    .newsletter-box { display: flex; align-items: center; gap: .5rem; padding: .5rem .65rem; border: 1px solid var(--catalog-line); border-radius: .6rem; background: #141620; }
+    .newsletter-box input { width: 100%; border: 0; outline: 0; background: transparent; color: white; font: inherit; font-size: .78rem; }
+    .newsletter-box .send-btn { display: grid; width: 2rem; height: 2rem; flex: 0 0 auto; place-items: center; border: 0; border-radius: 50%; background: var(--catalog-gold); }
+    .social-link { color: rgba(255,255,255,.55); }
+    .social-link:hover { color: var(--catalog-gold); }
+    .catalog-status { min-height: 1.25rem; color: #FCA5A5; font-size: .8rem; }
+    @media (max-width: 991.98px) {
+      .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 767.98px) {
+      .site-header .container { gap: .65rem; }
+      .site-header .nav-pill { gap: .7rem !important; padding: .4rem .8rem; }
+      .site-header .nav-link { font-size: .72rem; }
+      .catalog-hero { padding-top: 3rem; }
+      .catalog-grid { grid-template-columns: 1fr; }
+      .results-bar { align-items: flex-start; flex-direction: column; }
+      #advisory-panel { padding: 1.4rem; }
+    }
+    @media (max-width: 480px) {
+      .filter-grid { grid-template-columns: 1fr; }
+      .filter-grid .btn-gold { width: 100%; }
+      .listing-image { height: 225px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body th:attr="data-favorites-persistent=${favoritosPersistentes}">
+<header class="site-header fixed-top">
+  <div class="container d-flex align-items-center justify-content-between" style="max-width: 1440px; height: 5rem;">
+    <a class="d-flex align-items-center gap-3 text-decoration-none" th:href="@{/inicio}">
+      <span class="d-flex align-items-center justify-content-center rounded font-sora fw-bold" style="width: 2.5rem; height: 2.5rem; border: 1px solid rgba(255,255,255,.1); background: #13141C; color: #FDE68A;">P&amp;D</span>
+      <span class="d-flex flex-column">
+        <span class="small fw-bold font-sora text-white text-uppercase" style="letter-spacing: .05em; line-height: 1.1;">P&amp;D REAL ESTATE GROUP</span>
+        <span class="text-uppercase mt-1" style="font-size: .625rem; font-weight: 600; letter-spacing: .2em; color: #A0A5B2;">DESIGN SYSTEM</span>
+      </span>
+    </a>
+    <nav class="d-none d-md-flex align-items-center nav-pill" aria-label="Navegación principal">
+      <a class="nav-link" th:href="@{/inicio}">Inicio</a>
+      <a class="nav-link active" aria-current="page" th:href="@{/busqueda}">Buscar</a>
+      <a class="nav-link" th:href="@{/agentes}">Agentes</a>
+      <a class="nav-link" th:href="@{/nosotros}">Quiénes somos</a>
+    </nav>
+    <a aria-label="Perfil de usuario" class="d-flex align-items-center justify-content-center rounded-circle text-decoration-none" th:href="@{/mi-cuenta}" onclick="sessionStorage.setItem('ultimaVistaPublica', window.location.href);" style="width: 2.25rem; height: 2.25rem; background: #FDE68A; color: #090A0F;">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </a>
+  </div>
+</header>
+
+<main class="catalog-page">
+  <section class="catalog-hero">
+    <div class="container" style="max-width: 1440px;">
+      <p class="eyebrow mb-3">Propiedades en Piura y todo el Perú</p>
+      <h1 class="catalog-title font-sora fw-semibold text-white mb-3">Encuentra un lugar que se sienta tuyo</h1>
+      <p class="catalog-intro mb-4">Explora casas, departamentos, terrenos y espacios comerciales publicados por nuestro equipo.</p>
+
+      <form id="catalog-filters" class="filter-panel" method="get" th:action="@{/busqueda}">
+        <input th:if="${agenteIdFiltro != null}" type="hidden" name="agenteId" th:value="${agenteIdFiltro}">
+        <div class="filter-grid">
+          <div class="filter-control">
+            <label for="filter-operation">Operación</label>
+            <select id="filter-operation" name="modalidad">
+              <option value="" th:selected="${modalidadFiltro == ''}">Todas</option>
+              <option value="Venta" th:selected="${modalidadFiltro == 'Venta'}">Venta</option>
+              <option value="Alquiler" th:selected="${modalidadFiltro == 'Alquiler'}">Alquiler</option>
+            </select>
+          </div>
+          <div class="filter-control">
+            <label for="filter-district">Distrito</label>
+            <select id="filter-district" name="distrito">
+              <option value="" th:selected="${distritoFiltro == ''}">Todos los distritos</option>
+              <option th:each="distrito : ${distritos}" th:value="${distrito}" th:text="${distrito}"
+                      th:selected="${#strings.equalsIgnoreCase(distrito, distritoFiltro)}">Piura</option>
+            </select>
+          </div>
+          <div class="filter-control">
+            <label for="filter-type">Tipo de inmueble</label>
+            <select id="filter-type" name="tipo">
+              <option value="" th:selected="${tipoFiltro == ''}">Todos</option>
+              <option value="Casa" th:selected="${tipoFiltro == 'Casa'}">Casa</option>
+              <option value="Departamento" th:selected="${tipoFiltro == 'Departamento'}">Departamento</option>
+              <option value="Terreno" th:selected="${tipoFiltro == 'Terreno'}">Terreno</option>
+              <option value="Local Comercial" th:selected="${tipoFiltro == 'Local Comercial'}">Local Comercial</option>
+            </select>
+          </div>
+          <div class="filter-control">
+            <label for="filter-rooms">Habitaciones</label>
+            <select id="filter-rooms" name="habitaciones">
+              <option value="" th:selected="${habitacionesFiltro == null}">Cualquiera</option>
+              <option value="1" th:selected="${habitacionesFiltro == 1}">1+</option>
+              <option value="2" th:selected="${habitacionesFiltro == 2}">2+</option>
+              <option value="3" th:selected="${habitacionesFiltro == 3}">3+</option>
+              <option value="4" th:selected="${habitacionesFiltro == 4}">4+</option>
+            </select>
+          </div>
+          <button class="btn-gold" type="submit">Buscar</button>
+        </div>
+        <div class="results-bar">
+          <p class="results-copy">
+            Mostrando <strong th:text="|${desde}–${hasta} de ${totalPropiedades} propiedades disponibles|">0 propiedades disponibles</strong>
+          </p>
+          <label class="sort-control" for="sort-select">Ordenar
+            <select id="sort-select" name="orden" onchange="this.form.submit()">
+              <option value="recientes" th:selected="${ordenFiltro == 'recientes'}">Más recientes</option>
+              <option value="menor-precio" th:selected="${ordenFiltro == 'menor-precio'}">Menor precio</option>
+              <option value="mayor-precio" th:selected="${ordenFiltro == 'mayor-precio'}">Mayor precio</option>
+            </select>
+          </label>
+        </div>
+        <div class="active-filters" th:if="${modalidadFiltro != '' or distritoFiltro != '' or tipoFiltro != '' or habitacionesFiltro != null or agenteIdFiltro != null}">
+          <span class="filter-chip" th:if="${modalidadFiltro != ''}" th:text="${modalidadFiltro}">Venta</span>
+          <span class="filter-chip" th:if="${distritoFiltro != ''}" th:text="${distritoFiltro}">Distrito</span>
+          <span class="filter-chip" th:if="${tipoFiltro != ''}" th:text="${tipoFiltro}">Casa</span>
+          <span class="filter-chip" th:if="${habitacionesFiltro != null}" th:text="|${habitacionesFiltro}+ habitaciones|">3+ habitaciones</span>
+          <span class="filter-chip" th:if="${agenteIdFiltro != null}" th:text="|Asesor #${agenteIdFiltro}|">Asesor</span>
+          <a class="clear-filters" th:href="@{/busqueda}">Limpiar todo</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="py-4">
+    <div class="container" style="max-width: 1440px;">
+      <div class="catalog-grid" th:if="${!#lists.isEmpty(propiedades)}">
+        <article class="listing-card" th:each="propiedad : ${propiedades}">
+          <div class="listing-image">
+            <img th:if="${!#lists.isEmpty(propiedad.imagenes) and !#strings.isEmpty(propiedad.imagenes[0].url)}"
+                 th:src="${#strings.startsWith(propiedad.imagenes[0].url, 'http') or #strings.startsWith(propiedad.imagenes[0].url, '/') ? propiedad.imagenes[0].url : '/images/' + propiedad.imagenes[0].url}"
+                 th:alt="${propiedad.imagenes[0].textoAlternativo != null ? propiedad.imagenes[0].textoAlternativo : propiedad.titulo}"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+            <div class="listing-placeholder" aria-hidden="true"
+                 th:style="${!#lists.isEmpty(propiedad.imagenes) and !#strings.isEmpty(propiedad.imagenes[0].url) ? 'display:none' : 'display:grid'}">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.25">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5M5.25 9v11.25h13.5V9M9 20.25v-6h6v6"/>
+              </svg>
+            </div>
+            <div class="listing-badges">
+              <span class="listing-badge" th:text="${#strings.equalsIgnoreCase(propiedad.modalidad, 'Alquiler') ? 'EN ALQUILER' : 'EN VENTA'}">EN VENTA</span>
+              <span class="listing-badge reserved" th:if="${#strings.equalsIgnoreCase(propiedad.estado, 'RESERVADA')}">RESERVADA</span>
+            </div>
+            <button class="favorite-button" type="button" aria-label="Guardar en favoritos" aria-pressed="false"
+                    th:attr="data-favorite-id=${propiedad.id}">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="listing-body">
+            <p class="listing-price">
+              <span th:text="|${propiedad.moneda == 'PEN' ? 'S/' : (propiedad.moneda == 'USD' ? '$' : propiedad.moneda)} ${#numbers.formatDecimal(propiedad.precio, 1, 'COMMA', 0, 'POINT')}|">Consultar precio</span>
+              <span class="small text-white-50" th:if="${#strings.equalsIgnoreCase(propiedad.modalidad, 'Alquiler')}">/ mes</span>
+            </p>
+            <h2 class="listing-title" th:text="${propiedad.titulo}">Propiedad disponible</h2>
+            <p class="listing-location" th:text="|${propiedad.direccion != null ? propiedad.direccion + ', ' : ''}${propiedad.distrito != null ? propiedad.distrito + ', ' : ''}${propiedad.ciudad != null ? propiedad.ciudad : ''}|">Dirección, distrito, Perú</p>
+            <div class="listing-specs">
+              <span class="listing-spec"><span th:text="${propiedad.habitaciones != null ? propiedad.habitaciones : '—'}">—</span><small>Habitaciones</small></span>
+              <span class="listing-spec"><span th:text="${propiedad.banos != null ? propiedad.banos : '—'}">—</span><small>Baños</small></span>
+              <span class="listing-spec">
+                <span th:text="${propiedad.areaTotal != null ? #numbers.formatDecimal(propiedad.areaTotal, 1, 'COMMA', 0, 'POINT') : (propiedad.areaConstruida != null ? #numbers.formatDecimal(propiedad.areaConstruida, 1, 'COMMA', 0, 'POINT') : '—')}">—</span>
+                <span th:if="${propiedad.areaTotal != null or propiedad.areaConstruida != null}"> m²</span>
+                <small>Área</small>
+              </span>
+            </div>
+            <a class="listing-cta" th:href="@{/propiedades/{id}(id=${propiedad.id})}">Ver detalles <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      </div>
+      <div class="empty-state" th:if="${#lists.isEmpty(propiedades)}">
+        <h2>No encontramos propiedades con esos filtros</h2>
+        <p class="mb-3">Prueba con otros criterios o vuelve a ver todas las propiedades publicadas.</p>
+        <a class="listing-cta mx-auto" style="max-width: 15rem;" th:href="@{/busqueda}">Ver todas las propiedades</a>
+      </div>
+      <nav class="pagination" aria-label="Paginación de propiedades" th:if="${totalPaginas > 1}">
+        <a class="page-link" th:if="${paginaActual > 1}"
+           th:href="@{/busqueda(modalidad=${modalidadFiltro}, distrito=${distritoFiltro}, tipo=${tipoFiltro}, habitaciones=${habitacionesFiltro}, agenteId=${agenteIdFiltro}, orden=${ordenFiltro}, pagina=${paginaActual - 1})}"
+           aria-label="Página anterior">‹</a>
+        <a class="page-link" th:each="numero : ${#numbers.sequence(1, totalPaginas)}"
+           th:classappend="${numero == paginaActual ? ' active' : ''}"
+           th:href="@{/busqueda(modalidad=${modalidadFiltro}, distrito=${distritoFiltro}, tipo=${tipoFiltro}, habitaciones=${habitacionesFiltro}, agenteId=${agenteIdFiltro}, orden=${ordenFiltro}, pagina=${numero})}"
+           th:attr="aria-current=${numero == paginaActual ? 'page' : null}" th:text="${numero}">1</a>
+        <a class="page-link" th:if="${paginaActual < totalPaginas}"
+           th:href="@{/busqueda(modalidad=${modalidadFiltro}, distrito=${distritoFiltro}, tipo=${tipoFiltro}, habitaciones=${habitacionesFiltro}, agenteId=${agenteIdFiltro}, orden=${ordenFiltro}, pagina=${paginaActual + 1})}"
+           aria-label="Página siguiente">›</a>
+      </nav>
+      <p id="favorite-status" class="catalog-status" role="status" aria-live="polite"></p>
+
+      <aside id="advisory-panel" class="advisory-panel">
+        <div>
+          <p class="eyebrow mb-2">Atención personalizada</p>
+          <h2>¿Buscas algo en particular?</h2>
+          <p>¿No encuentras la propiedad que buscas? Nuestro equipo te ayuda a encontrar opciones según lo que necesitas.</p>
+        </div>
+        <a class="btn-gold advisory-cta inline-flex items-center justify-center text-center leading-none px-6 py-3.5"
+           th:if="${contactoUrl != null}" th:href="${contactoUrl}" target="_blank" rel="noopener noreferrer">CONSULTAR ASESOR</a>
+        <span class="btn-gold advisory-cta inline-flex items-center justify-center text-center leading-none px-6 py-3.5 disabled"
+              th:unless="${contactoUrl != null}" aria-disabled="true" title="Configura un WhatsApp o correo de contacto en administración">CONSULTAR ASESOR</span>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer pt-5 pb-4" style="padding-top: 5rem !important;">
+  <div class="container" style="max-width: 1440px;">
+    <div class="row g-5 pb-5 border-bottom border-white border-opacity-10">
+      <div class="col-lg-4">
+        <a class="d-inline-flex align-items-center gap-3 text-decoration-none mb-4" th:href="@{/inicio}">
+          <svg width="36" height="36" style="color: #FDE68A;" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M12 8H24C28.4183 8 32 11.5817 32 16C32 20.4183 28.4183 24 24 24H12V8Z" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+            <path d="M22 24H30C35.5228 24 40 28.4772 40 34C40 39.5228 35.5228 44 30 44H22V24Z" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+            <path d="M12 6V42" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+          </svg>
+          <span class="d-flex flex-column">
+            <span class="fw-semibold text-uppercase" style="font-size: .875rem; letter-spacing: .22em; color: #FDE68A; line-height: 1;">P&amp;D Real Estate</span>
+            <span class="text-uppercase mt-1" style="font-size: .5625rem; letter-spacing: .4em; color: rgba(255,255,255,.4);">Group</span>
+          </span>
+        </a>
+        <p class="mb-4" style="font-size: .75rem; line-height: 1.7; max-width: 24rem; color: #A0A5B2;">
+          Descubre propiedades residenciales y comerciales en Piura y otras ciudades del Perú con la asesoría integral de P&amp;D Real Estate.
+        </p>
+        <div class="newsletter-box">
+          <svg width="16" height="16" class="flex-shrink-0" style="color: rgba(255,255,255,.4);" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </svg>
+          <input type="email" placeholder="Ingrese su correo electrónico" aria-label="Correo electrónico">
+          <button class="send-btn" type="button" aria-label="Suscribirse">
+            <svg width="14" height="14" style="color: #090A0F; transform: rotate(-45deg);" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="row g-4">
+          <div class="col-6 col-sm">
+            <h4>Inicio</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/inicio}">Sección Hero</a></li>
+              <li><a class="footer-link" th:href="@{/inicio}">Características</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Propiedades</a></li>
+              <li><a class="footer-link" th:href="@{/inicio}">Testimonios</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Preguntas Frecuentes</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Sobre Nosotros</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/nosotros}">Nuestra Historia</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Nuestros Trabajos</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Cómo Funciona</a></li>
+              <li><a class="footer-link" th:href="@{/agentes}">Nuestro Equipo</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Clientes</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Propiedades</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/busqueda}">Portafolio</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Categorías</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Residencial</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Comercial</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Servicios</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/nosotros}">Tasación Experta</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Marketing Estratégico</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Negociación Inmobiliaria</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Cierre Exitoso</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Gestión de Propiedades</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Contacto</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/agentes}">Formulario de Contacto</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Nuestras Oficinas</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3" style="font-size: .75rem; color: rgba(255,255,255,.5);">
+      <p class="mb-0">
+        ©2024 P&amp;D Real Estate. Todos los derechos reservados.
+        <a class="footer-link text-decoration-underline" style="text-decoration-color: rgba(255,255,255,.2);" href="#">Términos y Condiciones</a> |
+        <a class="footer-link text-decoration-underline" style="text-decoration-color: rgba(255,255,255,.2);" href="#">Privacidad</a>
+      </p>
+      <div class="d-flex gap-3">
+        <a aria-label="Facebook" href="#" class="social-link">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+        </a>
+        <a aria-label="LinkedIn" href="#" class="social-link">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a aria-label="X (Twitter)" href="#" class="social-link">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a aria-label="YouTube" href="#" class="social-link">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script th:inline="javascript">
+  (() => {
+    const persistent = document.body.dataset.favoritesPersistent === "true";
+    const buttons = [...document.querySelectorAll("[data-favorite-id]")];
+    const status = document.getElementById("favorite-status");
+    const storageKey = "terraweb-favoritos";
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content;
+    let favorites = new Set();
+    const favoriteOverrides = new Map();
+
+    function paint(button) {
+      const active = favorites.has(String(button.dataset.favoriteId).trim());
+      button.setAttribute("aria-pressed", String(active));
+      button.setAttribute("aria-label", active ? "Quitar de favoritos" : "Guardar en favoritos");
+      const heart = button.querySelector("svg path");
+      const fill = active ? "#FDE68A" : "none";
+      const stroke = active ? "#FDE68A" : "currentColor";
+      heart.setAttribute("fill", fill);
+      heart.setAttribute("stroke", stroke);
+      heart.style.setProperty("fill", fill, "important");
+      heart.style.setProperty("stroke", stroke, "important");
+    }
+
+    function paintAll() {
+      buttons.forEach(paint);
+    }
+
+    function applyFavoriteOverrides(serverFavorites) {
+      for (const [id, active] of favoriteOverrides) {
+        if (active) {
+          serverFavorites.add(id);
+        } else {
+          serverFavorites.delete(id);
+        }
+      }
+      return serverFavorites;
+    }
+
+    async function requestFavorites(url, method = "GET") {
+      const headers = {};
+      if (method !== "GET") {
+        if (!csrfToken || !csrfHeader) {
+          throw new Error("No se pudo validar la sesión para guardar el favorito.");
+        }
+        headers[csrfHeader] = csrfToken;
+      }
+      const response = await fetch(url, { method, headers, credentials: "same-origin" });
+      if (!response.ok) {
+        throw new Error("No se pudieron guardar tus favoritos. Inténtalo nuevamente.");
+      }
+      return new Set((await response.json()).map(String));
+    }
+
+    function readLocalFavorites() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        return new Set(Array.isArray(saved) ? saved.map(value => String(value).trim()) : []);
+      } catch {
+        return new Set();
+      }
+    }
+
+    function saveLocalFavorites() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify([...favorites]));
+      } catch {
+        status.textContent = "El navegador no permitió guardar los favoritos localmente.";
+      }
+    }
+
+    async function initializeFavorites() {
+      const localFavorites = readLocalFavorites();
+      favorites = new Set(localFavorites);
+      paintAll();
+      try {
+        if (persistent) {
+          const serverFavorites = await requestFavorites(
+            /*[[@{/api/v1/mi-cuenta/favoritos}]]*/ "/api/v1/mi-cuenta/favoritos");
+          favorites = applyFavoriteOverrides(new Set([...localFavorites, ...serverFavorites]));
+          saveLocalFavorites();
+          paintAll();
+        }
+      } catch (error) {
+        if (persistent) {
+          status.textContent = `${error.message} Se muestran los favoritos guardados en este navegador.`;
+        }
+      }
+    }
+
+    buttons.forEach(button => button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = String(button.dataset.favoriteId).trim();
+      const removing = favorites.has(id);
+      if (removing) {
+        favorites.delete(id);
+      } else {
+        favorites.add(id);
+      }
+      favoriteOverrides.set(id, !removing);
+      paint(button);
+      saveLocalFavorites();
+      status.textContent = "";
+      try {
+        if (persistent) {
+          favorites = applyFavoriteOverrides(await requestFavorites(
+            /*[[@{/api/v1/mi-cuenta/favoritos/}]]*/ "/api/v1/mi-cuenta/favoritos/" + id,
+            removing ? "DELETE" : "PUT"));
+          saveLocalFavorites();
+        } else {
+          status.textContent = "";
+        }
+        paintAll();
+      } catch (error) {
+        status.textContent = `${error.message} El cambio se conserva en este navegador.`;
+      }
+    }));
+
+    initializeFavorites();
+  })();
+</script>
+</body>
+</html>

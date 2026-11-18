@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Propiedades | P&amp;D Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: {
+                colors: { background: "#090A0F", "surface-container-lowest": "#0D0E14", "surface-container-low": "#13141C", "surface-container": "#181A24", "surface-container-high": "#1E202E", "on-surface": "#f1f3f9", "on-surface-variant": "#9ca3af", "text-muted": "#717a8c", "accent-gold": "#FDE68A" },
+                fontFamily: { headline: ["Sora", "sans-serif"], body: ["Inter", "sans-serif"] }
+            } }
+        };
+    </script>
+    <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/admin-panel.js}" defer></script>
+</head>
+<body class="bg-background font-body text-on-surface antialiased min-h-screen">
+    <aside id="adminSidebar" class="admin-sidebar fixed inset-y-0 left-0 z-40 flex flex-col justify-between px-4 py-6" aria-label="Navegación administrativa">
+        <div>
+            <a class="mb-9 flex items-center gap-3 px-2 text-on-surface no-underline" th:href="@{/admin}">
+                <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-surface-container-high font-headline text-sm font-bold text-accent-gold" aria-hidden="true">PD</span>
+                <span class="flex flex-col"><span class="font-headline text-xs font-bold tracking-wide">P&amp;D REAL ESTATE</span><span class="mt-1 text-[10px] text-text-muted">Administración</span></span>
+            </a>
+            <nav class="flex flex-col gap-1" aria-label="Secciones del panel">
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin}"><span class="material-symbols-outlined text-lg" aria-hidden="true">dashboard</span>Resumen</a>
+                <a class="sidebar-link active flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/propiedades}" aria-current="page"><span class="material-symbols-outlined text-lg" aria-hidden="true">apartment</span>Propiedades</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/solicitudes}"><span class="material-symbols-outlined text-lg" aria-hidden="true">mark_email_unread</span>Solicitudes</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/agentes}"><span class="material-symbols-outlined text-lg" aria-hidden="true">badge</span>Agentes</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/configuracion}"><span class="material-symbols-outlined text-lg" aria-hidden="true">settings</span>Configuración</a>
+            </nav>
+        </div>
+        <div class="flex items-center justify-between gap-2 border-t border-white/10 pt-4">
+            <span class="truncate text-xs font-semibold">admin@terraweb</span>
+            <form method="post" th:action="@{/logout}"><button class="rounded-full border border-white/10 px-3 py-2 text-xs text-on-surface-variant hover:bg-surface-container-high" type="submit">Salir</button></form>
+        </div>
+    </aside>
+    <button class="admin-sidebar-backdrop" id="adminSidebarBackdrop" type="button" aria-label="Cerrar menú de navegación" hidden></button>
+    <main class="min-h-screen min-w-0 ml-[240px] px-4 py-7 sm:px-7 lg:px-10">
+        <button class="admin-mobile-toggle" id="adminMenuToggle" type="button" aria-controls="adminSidebar" aria-expanded="false" aria-label="Abrir menú de navegación"><span class="material-symbols-outlined" aria-hidden="true">menu</span></button>
+        <div class="mb-5 rounded-lg border border-accent-gold/25 bg-accent-gold/10 px-4 py-3 text-sm text-accent-gold"
+            role="status" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <header class="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
+            <div><p class="mb-2 text-sm text-accent-gold">Catálogo administrativo</p><h1 class="font-headline text-3xl font-semibold">Propiedades</h1><p class="mt-2 text-sm text-on-surface-variant">Busca y filtra las fichas registradas.</p></div>
+            <a class="button-primary inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold"
+                data-open-property-form th:href="@{/admin/propiedades/nueva(returnTo='/admin/propiedades')}"><span aria-hidden="true">+</span>Nueva propiedad</a>
+        </header>
+        <section class="admin-toolbar mb-5 space-y-4" aria-label="Filtros de propiedades">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap gap-2" role="tablist" aria-label="Estado de propiedades">
+                    <button class="admin-tab rounded-lg border border-transparent px-3 py-2 text-sm" type="button" data-property-state="TODAS" th:attr="aria-pressed=${estadoFiltro == 'TODAS'}">Todas <span th:text="${totalRegistradas}">0</span></button>
+                    <button class="admin-tab rounded-lg border border-transparent px-3 py-2 text-sm" type="button" data-property-state="DISPONIBLES" th:attr="aria-pressed=${estadoFiltro == 'DISPONIBLES'}">Disponibles <span th:text="${disponibles}">0</span></button>
+                    <button class="admin-tab rounded-lg border border-transparent px-3 py-2 text-sm" type="button" data-property-state="RESERVADAS" th:attr="aria-pressed=${estadoFiltro == 'RESERVADAS'}">Reservadas <span th:text="${reservadas}">0</span></button>
+                    <button class="admin-tab rounded-lg border border-transparent px-3 py-2 text-sm" type="button" data-property-state="RETIRADAS" th:attr="aria-pressed=${estadoFiltro == 'RETIRADAS'}">Retiradas <span th:text="${retiradas}">0</span></button>
+                </div>
+                <span class="text-sm text-on-surface-variant">⇅ Más recientes</span>
+            </div>
+            <form id="propertyFilters" class="grid gap-3 lg:grid-cols-[38%_repeat(4,minmax(130px,1fr))_40px]" method="get" th:action="@{/admin/propiedades}">
+                <input type="hidden" id="propertyState" name="estado" th:value="${estadoFiltro}">
+                <label class="sr-only" for="buscar">Buscar propiedades</label>
+                <input class="admin-control rounded-lg px-3 py-2 text-sm" id="buscar" name="buscar" placeholder="Buscar propiedad o ubicación" th:value="${buscar}">
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" name="operacion" aria-label="Operación"><option value="">Operación</option><option th:each="op : ${operaciones}" th:value="${op}" th:text="${op}" th:selected="${op == operacionFiltro}"></option></select>
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" name="distrito" aria-label="Distrito"><option value="">Distrito</option><option th:each="item : ${distritos}" th:value="${item}" th:text="${item}" th:selected="${item == distritoFiltro}"></option></select>
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" name="tipo" aria-label="Tipo"><option value="">Tipo</option><option th:each="item : ${tipos}" th:value="${item}" th:text="${item}" th:selected="${item == tipoFiltro}"></option></select>
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" name="precio" aria-label="Precio"><option value="">Precio</option><option value="0-200000" th:selected="${precioFiltro == '0-200000'}">Hasta 200.000</option><option value="200000-500000" th:selected="${precioFiltro == '200000-500000'}">200.000 - 500.000</option><option value="500000+" th:selected="${precioFiltro == '500000+'}">Más de 500.000</option></select>
+                <button class="icon-button" id="clearPropertyFilters" type="button" aria-label="Limpiar filtros" title="Limpiar filtros">↺</button>
+            </form>
+        </section>
+        <section class="admin-table-shell overflow-hidden rounded-xl" aria-label="Listado de propiedades">
+            <div class="overflow-x-auto"><table class="admin-table w-full min-w-[980px] text-left">
+                <thead class="text-xs text-on-surface-variant"><tr><th class="w-12 px-4 py-4"><input id="selectAllProperties" type="checkbox" aria-label="Seleccionar todas las propiedades"></th><th class="px-5 py-4 font-medium">Propiedad</th><th class="px-5 py-4 font-medium">Operación</th><th class="px-5 py-4 font-medium">Precio</th><th class="px-5 py-4 font-medium">Ubicación</th><th class="px-5 py-4 font-medium">Agente</th><th class="px-5 py-4 font-medium">Estado</th><th class="px-5 py-4 text-right font-medium">Acciones</th></tr></thead>
+                <tbody class="text-sm" id="propertiesBody">
+                    <tr th:each="propiedad : ${propiedades}">
+                        <td class="px-4 py-4"><input class="property-checkbox" type="checkbox" th:value="${propiedad.id}" th:attr="aria-label=|Seleccionar ${propiedad.titulo}|"></td>
+                        <td class="px-5 py-4"><div class="flex min-w-56 items-center gap-3">
+                            <img class="h-12 w-16 shrink-0 rounded-md object-cover" th:if="${!#lists.isEmpty(propiedad.imagenes)}" th:src="${propiedad.imagenes[0].url}" th:alt="${propiedad.imagenes[0].textoAlternativo}" onerror="this.hidden=true; this.nextElementSibling.hidden=false; this.nextElementSibling.classList.remove('hidden');">
+                            <span class="flex h-12 w-16 shrink-0 items-center justify-center rounded-md bg-[#181A24]" th:classappend="${!#lists.isEmpty(propiedad.imagenes)} ? ' hidden' : ''" aria-hidden="true">
+                                <svg class="h-6 w-6 text-accent-gold/80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 10.5 12 4l8.5 6.5v9a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 20.5v-6a3 3 0 0 1 6 0v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                            </span>
+                            <span class="font-medium" th:text="${propiedad.titulo}">Propiedad</span></div></td>
+                        <td class="px-5 py-4"><span class="badge" th:classappend="${#strings.toUpperCase(propiedad.modalidad ?: '') == 'ALQUILER'} ? ' badge-rent' : ' badge-sale'" th:text="${propiedad.modalidad}">Venta</span></td>
+                        <td class="whitespace-nowrap px-5 py-4" th:text="|${propiedad.moneda} ${#numbers.formatDecimal(propiedad.precio, 1, 'COMMA', 0, 'POINT')}|">Precio</td>
+                        <td class="px-5 py-4" th:text="${#strings.isEmpty(propiedad.distrito) ? propiedad.ciudad : propiedad.distrito + ', ' + propiedad.ciudad}">Ubicación</td>
+                        <td class="px-5 py-4" th:text="${propiedad.agente == null ? 'Sin asignar' : propiedad.agente.nombre}">Agente</td>
+                        <td class="px-5 py-4"><span class="badge" th:classappend="${!propiedad.publicada or #strings.toUpperCase(propiedad.estado ?: '').contains('VENDID') or #strings.toUpperCase(propiedad.estado ?: '').contains('RETIRAD')} ? ' badge-inactive' : (${#strings.toUpperCase(propiedad.estado ?: '').contains('RESERV')} ? ' badge-reserved' : (${#strings.toUpperCase(propiedad.estado ?: '').contains('NEGOCI') or #strings.toUpperCase(propiedad.estado ?: '').contains('VISITA') or #strings.toUpperCase(propiedad.estado ?: '').contains('REVISION')} ? ' badge-progress' : ' badge-available'))" th:text="${propiedad.publicada ? propiedad.estado : 'Retirada'}">Estado</span></td>
+                        <td class="whitespace-nowrap px-5 py-4 text-right"><div class="inline-flex items-center gap-2">
+                            <a class="icon-button" data-open-property-form
+                                th:href="@{/admin/propiedades/{id}/editar(id=${propiedad.id},returnTo='/admin/propiedades')}"
+                                th:aria-label="|Editar ${propiedad.titulo}|" title="Editar"><span class="material-symbols-outlined" aria-hidden="true">edit</span></a>
+                            <th:block th:if="${propiedad.publicada}">
+                                <form method="post" th:action="@{/admin/propiedades/{id}/eliminar(id=${propiedad.id})}"><button class="icon-button" type="submit" th:aria-label="|Retirar ${propiedad.titulo}|" title="Retirar"><span class="material-symbols-outlined" aria-hidden="true">archive</span></button></form>
+                            </th:block>
+                            <th:block th:if="${!propiedad.publicada}">
+                                <form method="post" th:action="@{/admin/propiedades/{id}/reactivar(id=${propiedad.id})}"><button class="icon-button" type="submit" th:aria-label="|Reactivar ${propiedad.titulo}|" title="Reactivar"><span class="material-symbols-outlined" aria-hidden="true">unarchive</span></button></form>
+                            </th:block>
+                        </div></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(propiedades)}"><td class="px-5 py-10 text-center text-on-surface-variant" colspan="8">No hay propiedades que coincidan con los filtros.</td></tr>
+                </tbody>
+            </table></div>
+            <footer class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-sm">
+                <span class="text-on-surface-variant" id="propertyCount" th:text="|${totalPropiedades} propiedades|">0 propiedades</span>
+                <div class="flex items-center gap-1" id="propertiesPagination" aria-label="Paginación">
+                    <a class="pagination-link" th:attr="aria-disabled=${pagina == 0}" th:href="@{/admin/propiedades(pagina=${pagina - 1},estado=${estadoFiltro},buscar=${buscar},operacion=${operacionFiltro},distrito=${distritoFiltro},tipo=${tipoFiltro},precio=${precioFiltro})}" aria-label="Página anterior">&lt;</a>
+                    <a class="pagination-link" th:each="numero : ${#numbers.sequence(0, totalPaginas - 1)}" th:href="@{/admin/propiedades(pagina=${numero},estado=${estadoFiltro},buscar=${buscar},operacion=${operacionFiltro},distrito=${distritoFiltro},tipo=${tipoFiltro},precio=${precioFiltro})}" th:attr="aria-current=${numero == pagina} ? 'page' : null" th:text="${numero + 1}">1</a>
+                    <a class="pagination-link" th:attr="aria-disabled=${pagina + 1 >= totalPaginas}" th:href="@{/admin/propiedades(pagina=${pagina + 1},estado=${estadoFiltro},buscar=${buscar},operacion=${operacionFiltro},distrito=${distritoFiltro},tipo=${tipoFiltro},precio=${precioFiltro})}" aria-label="Página siguiente">&gt;</a>
+                </div>
+            </footer>
+        </section>
+        <p id="propertyListError" class="mt-3 text-sm text-red-300" role="alert"></p>
+    </main>
+    <dialog id="propertyEditorModal" class="admin-modal property-editor-modal rounded-2xl p-4 sm:p-6">
+        <div class="mb-4 flex justify-end">
+            <button class="button-secondary icon-button" type="button" data-close-property-editor aria-label="Cerrar formulario" title="Cerrar">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+        </div>
+        <div data-property-form-content></div>
+    </dialog>
+    <script>
+        const propertyFilterForm = document.getElementById("propertyFilters");
+        let propertySearchTimer;
+        const propertyListError = document.getElementById("propertyListError");
+
+        async function reloadProperties(targetUrl) {
+            propertyListError.textContent = "";
+            try {
+                const response = await fetch(targetUrl, {headers: {"Accept": "text/html"}});
+                if (!response.ok || response.redirected) throw new Error("No se pudieron actualizar las propiedades.");
+                const html = await response.text();
+                const page = new DOMParser().parseFromString(html, "text/html");
+                const nextBody = page.getElementById("propertiesBody");
+                const nextPagination = page.getElementById("propertiesPagination");
+                if (!nextBody || !nextPagination) throw new Error("La respuesta no contiene el listado esperado.");
+                document.getElementById("propertiesBody").innerHTML = nextBody.innerHTML;
+                document.getElementById("propertiesPagination").innerHTML = nextPagination.innerHTML;
+                document.getElementById("propertyCount").textContent = page.getElementById("propertyCount").textContent;
+                document.querySelectorAll("[data-property-state]").forEach(tab => {
+                    tab.setAttribute("aria-pressed", String(tab.dataset.propertyState === new URL(targetUrl).searchParams.get("estado")));
+                });
+                window.history.replaceState(null, "", targetUrl);
+                document.getElementById("selectAllProperties").checked = false;
+            } catch (error) {
+                propertyListError.textContent = error.message;
+            }
+        }
+
+        propertyFilterForm.addEventListener("submit", event => {
+            event.preventDefault();
+            const target = new URL(propertyFilterForm.action, window.location.origin);
+            new FormData(propertyFilterForm).forEach((value, key) => {
+                if (value) target.searchParams.set(key, value);
+                else target.searchParams.delete(key);
+            });
+            target.searchParams.set("pagina", "0");
+            reloadProperties(target);
+        });
+        propertyFilterForm.querySelectorAll("select").forEach(select => select.addEventListener("change", () => propertyFilterForm.requestSubmit()));
+        document.getElementById("buscar").addEventListener("input", () => {
+            window.clearTimeout(propertySearchTimer);
+            propertySearchTimer = window.setTimeout(() => propertyFilterForm.requestSubmit(), 350);
+        });
+        document.querySelectorAll("[data-property-state]").forEach(tab => tab.addEventListener("click", () => {
+            document.getElementById("propertyState").value = tab.dataset.propertyState;
+            propertyFilterForm.requestSubmit();
+        }));
+        document.getElementById("clearPropertyFilters").addEventListener("click", () => {
+            propertyFilterForm.reset();
+            document.getElementById("propertyState").value = "TODAS";
+            propertyFilterForm.requestSubmit();
+        });
+        document.getElementById("propertiesPagination").addEventListener("click", event => {
+            const link = event.target.closest("a.pagination-link");
+            if (!link || link.getAttribute("aria-disabled") === "true") return;
+            event.preventDefault();
+            reloadProperties(link.href);
+        });
+        const selectAllProperties = document.getElementById("selectAllProperties");
+        selectAllProperties.addEventListener("change", () => {
+            document.querySelectorAll(".property-checkbox").forEach(checkbox => checkbox.checked = selectAllProperties.checked);
+        });
+        document.getElementById("propertiesBody").addEventListener("change", event => {
+            if (!event.target.classList.contains("property-checkbox")) return;
+            selectAllProperties.checked = [...document.querySelectorAll(".property-checkbox")].every(item => item.checked);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Solicitudes | P&amp;D Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#090A0F","surface-container-lowest":"#0D0E14","surface-container-low":"#13141C","surface-container":"#181A24","surface-container-high":"#1E202E","on-surface":"#f1f3f9","on-surface-variant":"#9ca3af","text-muted":"#717a8c","accent-gold":"#FDE68A"},fontFamily:{headline:["Sora","sans-serif"],body:["Inter","sans-serif"]}}}};</script>
+    <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/admin-panel.js}" defer></script>
+</head>
+<body class="min-h-screen bg-background font-body text-on-surface antialiased">
+    <aside id="adminSidebar" class="admin-sidebar fixed inset-y-0 left-0 z-40 flex flex-col justify-between px-4 py-6" aria-label="Navegación administrativa">
+        <div>
+            <a class="mb-9 flex items-center gap-3 px-2 text-on-surface no-underline" th:href="@{/admin}"><span class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-surface-container-high font-headline text-sm font-bold text-accent-gold" aria-hidden="true">PD</span><span class="flex flex-col"><span class="font-headline text-xs font-bold tracking-wide">P&amp;D REAL ESTATE</span><span class="mt-1 text-[10px] text-text-muted">Administración</span></span></a>
+            <nav class="flex flex-col gap-1" aria-label="Secciones del panel">
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin}"><span class="material-symbols-outlined text-lg" aria-hidden="true">dashboard</span>Resumen</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/propiedades}"><span class="material-symbols-outlined text-lg" aria-hidden="true">apartment</span>Propiedades</a>
+                <a class="sidebar-link active flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/solicitudes}" aria-current="page"><span class="material-symbols-outlined text-lg" aria-hidden="true">mark_email_unread</span>Solicitudes</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/agentes}"><span class="material-symbols-outlined text-lg" aria-hidden="true">badge</span>Agentes</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/configuracion}"><span class="material-symbols-outlined text-lg" aria-hidden="true">settings</span>Configuración</a>
+            </nav>
+        </div>
+        <div class="flex items-center justify-between gap-2 border-t border-white/10 pt-4"><span class="truncate text-xs font-semibold">admin@terraweb</span><form method="post" th:action="@{/logout}"><button class="rounded-full border border-white/10 px-3 py-2 text-xs text-on-surface-variant hover:bg-surface-container-high" type="submit">Salir</button></form></div>
+    </aside>
+    <button class="admin-sidebar-backdrop" id="adminSidebarBackdrop" type="button" aria-label="Cerrar menú de navegación" hidden></button>
+    <main class="min-h-screen min-w-0 ml-[240px] px-4 py-7 sm:px-7 lg:px-10">
+        <button class="admin-mobile-toggle" id="adminMenuToggle" type="button" aria-controls="adminSidebar" aria-expanded="false" aria-label="Abrir menú de navegación"><span class="material-symbols-outlined" aria-hidden="true">menu</span></button>
+        <div class="mb-5 rounded-lg border border-accent-gold/25 bg-accent-gold/10 px-4 py-3 text-sm text-accent-gold"
+            role="status" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <header class="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
+            <div><p class="mb-2 text-sm text-accent-gold">Atención comercial</p><h1 class="font-headline text-3xl font-semibold">Solicitudes</h1><p class="mt-2 text-sm text-on-surface-variant">Consultas recibidas desde las fichas de propiedades.</p></div>
+            <div class="flex flex-wrap gap-2">
+                <button class="button-secondary rounded-full px-4 py-3 text-sm" id="downloadRequests" type="button"><span class="material-symbols-outlined mr-1 align-middle text-base" aria-hidden="true">download</span>Descargar Reporte</button>
+                <button class="button-primary rounded-full px-5 py-3 text-sm font-semibold" id="openRequestModal" type="button">+ Nueva Solicitud</button>
+            </div>
+        </header>
+        <section class="admin-toolbar mb-5 space-y-4">
+            <div class="flex flex-wrap gap-2 border-b border-white/10 pb-3" id="requestTabs" role="tablist" aria-label="Filtrar solicitudes">
+                <button class="admin-tab request-tab rounded-lg border px-3 py-2 text-sm" aria-pressed="true" data-filter="ALL" type="button">Todas <span data-count="ALL">0</span></button>
+                <button class="admin-tab request-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="NEW" type="button">Nuevas <span data-count="NEW">0</span></button>
+                <button class="admin-tab request-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="SCHEDULED" type="button">Visitas Agendadas <span data-count="SCHEDULED">0</span></button>
+                <button class="admin-tab request-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="NEGOTIATION" type="button">En Negociación <span data-count="NEGOTIATION">0</span></button>
+                <button class="admin-tab request-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="CLOSED" type="button">Cerradas <span data-count="CLOSED">0</span></button>
+            </div>
+            <div class="grid gap-3 lg:grid-cols-[minmax(240px,1fr)_repeat(3,minmax(150px,200px))_40px]">
+                <label class="sr-only" for="requestSearch">Buscar solicitud</label>
+                <input class="admin-control rounded-lg px-3 py-2 text-sm" id="requestSearch" placeholder="Buscar cliente, propiedad o contacto">
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" id="requestType" aria-label="Tipo de solicitud"><option value="">Tipo de solicitud: todas</option><option value="VISITA">Visita</option></select>
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" id="requestAgent" aria-label="Asesor"><option value="">Asesor: Todos</option></select>
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" id="requestDate" aria-label="Fecha"><option value="">Todas las fechas</option><option value="today">Hoy</option><option value="week">Últimos 7 días</option><option value="month">Últimos 30 días</option></select>
+                <button class="icon-button" id="resetRequestFilters" type="button" aria-label="Reiniciar filtros" title="Reiniciar filtros">↺</button>
+            </div>
+        </section>
+        <p class="mb-4 text-sm text-error" id="requestError" role="alert"></p>
+        <section class="admin-table-shell overflow-hidden rounded-xl">
+            <div class="overflow-x-auto"><table class="admin-table w-full min-w-[1000px] text-left">
+                <thead class="text-xs text-on-surface-variant"><tr><th class="w-12 px-4 py-4"><input id="selectAllRequests" type="checkbox" aria-label="Seleccionar todas las solicitudes"></th><th class="px-5 py-4 font-medium">Cliente</th><th class="px-5 py-4 font-medium">Propiedad</th><th class="px-5 py-4 font-medium">Contacto</th><th class="px-5 py-4 font-medium">Visita</th><th class="px-5 py-4 font-medium">Estado</th><th class="px-5 py-4 text-right font-medium">Acciones</th></tr></thead>
+                <tbody id="requestsBody" class="text-sm"><tr><td class="px-5 py-10 text-center text-on-surface-variant" colspan="7">Cargando solicitudes…</td></tr></tbody>
+            </table></div>
+            <footer class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-sm">
+                <span class="text-on-surface-variant" id="requestPageSummary"></span>
+                <nav class="flex items-center gap-1" id="requestPagination" aria-label="Paginación de solicitudes"></nav>
+            </footer>
+        </section>
+    </main>
+    <dialog id="requestModal" class="admin-modal w-[min(94vw,560px)] rounded-2xl p-0">
+        <form id="requestForm" class="space-y-4 p-6">
+            <div class="flex items-center justify-between"><h2 class="font-headline text-xl font-semibold">Registrar solicitud</h2><button class="button-secondary rounded-lg px-3 py-2" id="closeRequestModal" type="button">Cerrar</button></div>
+            <label class="block text-sm">Nombre del cliente<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="nombre" required maxlength="120"></label>
+            <div class="grid gap-4 sm:grid-cols-2"><label class="block text-sm">Correo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="correo" type="email" required maxlength="180"></label><label class="block text-sm">Teléfono<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="telefono" required></label></div>
+            <label class="block text-sm">Propiedad<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="propiedadId" id="requestProperty" required><option value="">Selecciona una propiedad</option></select></label>
+            <label class="block text-sm">Asesor asignado<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="agenteId" id="requestAgentSelect"><option value="">Sin asignar</option></select></label>
+            <label class="block text-sm">Fecha estimada de visita<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="fechaEstimada" type="date" required></label>
+            <p class="text-sm text-red-300" id="requestFormError" role="alert"></p>
+            <button class="button-primary w-full rounded-lg px-4 py-3 font-semibold" type="submit">Guardar solicitud</button>
+        </form>
+    </dialog>
+    <script th:inline="none">
+        const requestBody = document.getElementById("requestsBody");
+        const requestError = document.getElementById("requestError");
+        const requestModal = document.getElementById("requestModal");
+        let allRequests = [];
+        let currentFilter = "ALL";
+        let currentPage = 1;
+        const pageSize = 10;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        const today = new Date();
+        today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+        document.querySelector('input[name="fechaEstimada"]').min = today.toISOString().slice(0, 10);
+
+        function cell(text) {
+            const element = document.createElement("td");
+            element.className = "px-5 py-4";
+            element.textContent = text || "—";
+            return element;
+        }
+
+        function escapeCsv(value) {
+            return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
+        }
+
+        function downloadCsv(filename, rows) {
+            const csv = rows.map(row => row.map(escapeCsv).join(",")).join("\r\n");
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8"}));
+            link.download = filename;
+            link.click();
+            window.setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        }
+
+        function statusClass(status) {
+            if (status === "NUEVA") return "badge-available";
+            if (status === "VISITA_AGENDADA") return "badge-progress";
+            if (status === "NEGOCIACION") return "badge-reserved";
+            return "badge-inactive";
+        }
+
+        function addPagination(total) {
+            const container = document.getElementById("requestPagination");
+            container.replaceChildren();
+            const pages = Math.max(1, Math.ceil(total / pageSize));
+            const addPageButton = (label, page, disabled, current) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "pagination-link";
+                button.textContent = label;
+                button.setAttribute("aria-label", label === "<" ? "Página anterior" : label === ">" ? "Página siguiente" : "Página " + label);
+                button.setAttribute("aria-disabled", String(disabled));
+                if (current) button.setAttribute("aria-current", "page");
+                button.addEventListener("click", () => {
+                    if (disabled) return;
+                    currentPage = page;
+                    renderRequests();
+                });
+                container.append(button);
+            };
+            addPageButton("<", currentPage - 1, currentPage <= 1, false);
+            for (let page = 1; page <= pages; page++) addPageButton(String(page), page, false, page === currentPage);
+            addPageButton(">", currentPage + 1, currentPage >= pages, false);
+            document.getElementById("requestPageSummary").textContent = total
+                ? "Mostrando " + ((currentPage - 1) * pageSize + 1) + "–" + Math.min(currentPage * pageSize, total) + " de " + total
+                : "Sin solicitudes";
+        }
+
+        function addAction(row, solicitud) {
+            const actions = document.createElement("td");
+            actions.className = "px-5 py-4 text-right";
+            const actionList = document.createElement("div");
+            actionList.className = "inline-flex items-center gap-2";
+            const phone = document.createElement("a");
+            phone.className = "icon-button";
+            phone.href = "tel:" + (solicitud.telefono || "");
+            phone.setAttribute("aria-label", "Llamar a " + solicitud.nombre);
+            phone.title = "Llamar";
+            phone.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">call</span>';
+            const whatsapp = document.createElement("a");
+            whatsapp.className = "icon-button";
+            whatsapp.href = "https://wa.me/" + (solicitud.telefono || "").replace(/\D/g, "");
+            whatsapp.target = "_blank";
+            whatsapp.rel = "noopener noreferrer";
+            whatsapp.setAttribute("aria-label", "Contactar por WhatsApp a " + solicitud.nombre);
+            whatsapp.title = "WhatsApp";
+            whatsapp.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">chat</span>';
+            const statusControl = document.createElement("div");
+            statusControl.className = "relative inline-block";
+            const statusToggle = document.createElement("button");
+            statusToggle.type = "button";
+            statusToggle.className = "icon-button";
+            statusToggle.setAttribute("aria-label", "Cambiar estado de " + solicitud.nombre);
+            statusToggle.title = "Cambiar estado";
+            statusToggle.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">sync_alt</span>';
+            const statusDropdown = document.createElement("div");
+            statusDropdown.className = "absolute right-0 top-full mt-1 z-50 hidden min-w-[180px] rounded-lg border border-white/15 bg-[#1A1C27] shadow-xl text-sm";
+            const statusOptions = [
+                ["NUEVA", "Nueva"],
+                ["VISITA_AGENDADA", "Visita agendada"],
+                ["NEGOCIACION", "En negociación"],
+                ["CERRADA", "Cerrada"]
+            ];
+            statusOptions.forEach(([value, label]) => {
+                const optionBtn = document.createElement("button");
+                optionBtn.type = "button";
+                optionBtn.className = "status-dropdown-item w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-[#1E202E] hover:text-[#FDE68A] first:rounded-t-lg last:rounded-b-lg";
+                optionBtn.textContent = label;
+                if (solicitud.estado === value) optionBtn.disabled = true;
+                optionBtn.addEventListener("click", async () => {
+                    try {
+                        const response = await fetch("/api/v1/admin/solicitudes/" + solicitud.id + "/estado", {
+                            method: "PUT",
+                            headers: {"Content-Type": "application/json", [csrfHeader]: csrfToken},
+                            body: JSON.stringify({estado: value})
+                        });
+                        if (!response.ok) throw new Error("No se pudo actualizar el estado de la solicitud.");
+                        await loadRequests();
+                    } catch (error) {
+                        requestError.textContent = error.message;
+                    }
+                });
+                statusDropdown.append(optionBtn);
+            });
+            statusToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const isVisible = !statusDropdown.classList.contains("hidden");
+                document.querySelectorAll(".status-dropdown-open").forEach(el => {
+                    el.classList.add("hidden");
+                    el.classList.remove("status-dropdown-open");
+                });
+                if (!isVisible) {
+                    statusDropdown.classList.remove("hidden");
+                    statusDropdown.classList.add("status-dropdown-open");
+                }
+            });
+            statusControl.append(statusToggle, statusDropdown);
+            actionList.append(phone, whatsapp, statusControl);
+            actions.append(actionList);
+            row.append(actions);
+        }
+
+
+        function filteredRequests() {
+            const query = document.getElementById("requestSearch").value.trim().toLocaleLowerCase();
+            const typeFilter = document.getElementById("requestType").value;
+            const agentFilter = document.getElementById("requestAgent").value;
+            const dateFilter = document.getElementById("requestDate").value;
+            const now = new Date();
+            return allRequests.filter(item => {
+                const matchesTab = currentFilter === "NEW" ? item.estado === "NUEVA"
+                    : currentFilter === "SCHEDULED" ? item.estado === "VISITA_AGENDADA"
+                    : currentFilter === "NEGOTIATION" ? item.estado === "NEGOCIACION"
+                    : currentFilter === "CLOSED" ? item.estado === "CERRADA" || item.archivada : true;
+                const searchable = [item.nombre, item.tituloPropiedad, item.correo, item.telefono].join(" ").toLocaleLowerCase();
+                const requestDate = item.fechaSolicitud ? new Date(item.fechaSolicitud) : null;
+                const daysAgo = requestDate ? (now - requestDate) / 86400000 : null;
+                const matchesDate = !dateFilter || (daysAgo !== null && (dateFilter === "today"
+                    ? requestDate.toDateString() === now.toDateString()
+                    : dateFilter === "week" ? daysAgo <= 7 : daysAgo <= 30));
+                const matchesAgent = !agentFilter || (agentFilter === "UNASSIGNED"
+                    ? !item.agenteId
+                    : String(item.agenteId) === agentFilter);
+                return matchesTab && searchable.includes(query) && matchesDate
+                    && matchesAgent && (!typeFilter || typeFilter === "VISITA");
+            });
+        }
+
+        function renderRequests() {
+            const counts = {
+                ALL: allRequests.length,
+                NEW: allRequests.filter(item => item.estado === "NUEVA").length,
+                SCHEDULED: allRequests.filter(item => item.estado === "VISITA_AGENDADA").length,
+                NEGOTIATION: allRequests.filter(item => item.estado === "NEGOCIACION").length,
+                CLOSED: allRequests.filter(item => item.estado === "CERRADA" || item.archivada).length
+            };
+            Object.entries(counts).forEach(([key, count]) => {
+                document.querySelectorAll("[data-count]").forEach(counter => {
+                    if (counter.dataset.count === key) counter.textContent = count;
+                });
+            });
+            requestBody.replaceChildren();
+            document.getElementById("selectAllRequests").checked = false;
+            const rows = filteredRequests();
+            currentPage = Math.min(currentPage, Math.max(1, Math.ceil(rows.length / pageSize)));
+            addPagination(rows.length);
+            if (!rows.length) {
+                const row = document.createElement("tr");
+                const empty = cell("No hay solicitudes para este filtro.");
+                empty.colSpan = 7;
+                empty.className += " text-center text-on-surface-variant";
+                row.append(empty);
+                requestBody.append(row);
+                return;
+            }
+            rows.slice((currentPage - 1) * pageSize, currentPage * pageSize).forEach(item => {
+                const row = document.createElement("tr");
+                const checkboxCell = document.createElement("td");
+                checkboxCell.className = "px-4 py-4";
+                const checkbox = document.createElement("input");
+                checkbox.className = "request-checkbox";
+                checkbox.type = "checkbox";
+                checkbox.value = item.id;
+                checkbox.setAttribute("aria-label", "Seleccionar solicitud de " + item.nombre);
+                checkboxCell.append(checkbox);
+                const client = document.createElement("td");
+                client.className = "px-5 py-4";
+                const clientProfile = document.createElement("div");
+                clientProfile.className = "flex items-center gap-3";
+                const initials = document.createElement("span");
+                initials.className = "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-xs font-semibold text-accent-gold";
+                initials.textContent = (item.nombre || "?").trim().split(/\s+/).map(part => part.charAt(0)).slice(0, 2).join("").toUpperCase();
+                const clientName = document.createElement("span");
+                clientName.textContent = item.nombre || "—";
+                clientProfile.append(initials, clientName);
+                client.append(clientProfile);
+                const contact = cell(item.correo);
+                if (item.telefono) {
+                    const phone = document.createElement("a");
+                    phone.className = "mt-1 block text-xs text-on-surface-variant hover:text-accent-gold";
+                    phone.href = "tel:" + item.telefono;
+                    phone.textContent = item.telefono;
+                    contact.append(phone);
+                }
+                row.append(checkboxCell, client, cell(item.tituloPropiedad), contact, cell(item.fechaEstimada));
+                const status = document.createElement("td");
+                status.className = "px-5 py-4";
+                const badge = document.createElement("span");
+                badge.className = "badge " + statusClass(item.estado);
+                badge.textContent = item.archivada ? "Cerrada" : (item.estado || "Nueva").replaceAll("_", " ");
+                status.append(badge);
+                row.append(status);
+                addAction(row, item);
+                requestBody.append(row);
+            });
+        }
+
+        async function loadRequests() {
+            requestError.textContent = "";
+            const response = await fetch("/api/v1/admin/solicitudes", {headers: {"Accept": "application/json"}});
+            if (!response.ok) throw new Error("No se pudieron cargar las solicitudes.");
+            const requests = await response.json();
+            if (!Array.isArray(requests)) throw new Error("El servidor devolvió una lista de solicitudes no válida.");
+            allRequests = requests;
+            const agentSelect = document.getElementById("requestAgent");
+            const selectedAgent = agentSelect.value;
+            agentSelect.replaceChildren(new Option("Asesor: Todos", ""));
+            const assignedAgents = new Map(allRequests
+                .filter(item => item.agenteId != null && item.agenteNombre)
+                .map(item => [String(item.agenteId), item.agenteNombre]));
+            [...assignedAgents.entries()].sort((first, second) => first[1].localeCompare(second[1], "es"))
+                .forEach(([id, name]) => agentSelect.add(new Option(name, id)));
+            if (allRequests.some(item => item.agenteId == null)) {
+                agentSelect.add(new Option("Sin asesor asignado", "UNASSIGNED"));
+            }
+            if ([...agentSelect.options].some(option => option.value === selectedAgent)) {
+                agentSelect.value = selectedAgent;
+            }
+            renderRequests();
+        }
+
+        document.querySelectorAll(".request-tab").forEach(tab => tab.addEventListener("click", () => {
+            currentFilter = tab.dataset.filter;
+            currentPage = 1;
+            document.querySelectorAll(".request-tab").forEach(item => item.setAttribute("aria-pressed", String(item === tab)));
+            renderRequests();
+        }));
+        ["requestSearch", "requestType", "requestAgent", "requestDate"].forEach(id => {
+            document.getElementById(id).addEventListener(id === "requestSearch" ? "input" : "change", () => {
+                currentPage = 1;
+                renderRequests();
+            });
+        });
+        document.getElementById("resetRequestFilters").addEventListener("click", () => {
+            document.getElementById("requestSearch").value = "";
+            document.getElementById("requestType").value = "";
+            document.getElementById("requestAgent").value = "";
+            document.getElementById("requestDate").value = "";
+            currentFilter = "ALL";
+            currentPage = 1;
+            document.querySelectorAll(".request-tab").forEach(tab => tab.setAttribute("aria-pressed", String(tab.dataset.filter === "ALL")));
+            renderRequests();
+        });
+        document.getElementById("selectAllRequests").addEventListener("change", event => {
+            document.querySelectorAll(".request-checkbox").forEach(checkbox => checkbox.checked = event.target.checked);
+        });
+        requestBody.addEventListener("change", event => {
+            if (!event.target.classList.contains("request-checkbox")) return;
+            const checkboxes = [...document.querySelectorAll(".request-checkbox")];
+            document.getElementById("selectAllRequests").checked = checkboxes.length > 0 && checkboxes.every(checkbox => checkbox.checked);
+        });
+        document.getElementById("downloadRequests").addEventListener("click", () => {
+            const rows = [["Cliente", "Propiedad", "Correo", "Teléfono", "Fecha de visita", "Estado"]];
+            filteredRequests().forEach(item => rows.push([
+                item.nombre, item.tituloPropiedad, item.correo, item.telefono, item.fechaEstimada, item.estado
+            ]));
+            downloadCsv("solicitudes.csv", rows);
+        });
+        document.addEventListener("click", () => {
+            document.querySelectorAll(".status-dropdown-open").forEach(el => {
+                el.classList.add("hidden");
+                el.classList.remove("status-dropdown-open");
+            });
+        });
+        document.getElementById("openRequestModal").addEventListener("click", async () => {
+            const formError = document.getElementById("requestFormError");
+            formError.textContent = "";
+            try {
+                const propertySelect = document.getElementById("requestProperty");
+                if (propertySelect.options.length === 1) {
+                    const response = await fetch("/api/v1/admin/propiedades", {headers: {"Accept": "application/json"}});
+                    if (!response.ok) throw new Error("No se pudieron cargar las propiedades.");
+                    (await response.json()).forEach(property => {
+                        const option = document.createElement("option");
+                        option.value = property.id;
+                        option.textContent = property.titulo;
+                        propertySelect.append(option);
+                    });
+                }
+                const agentSelect = document.getElementById("requestAgentSelect");
+                if (agentSelect.options.length === 1) {
+                    const response = await fetch("/api/v1/admin/agentes", {headers: {"Accept": "application/json"}});
+                    if (response.ok) {
+                        const agents = await response.json();
+                        agents.forEach(agent => {
+                            const option = document.createElement("option");
+                            option.value = agent.id;
+                            option.textContent = agent.nombre;
+                            agentSelect.append(option);
+                        });
+                    }
+                }
+                requestModal.showModal();
+            } catch (error) {
+                formError.textContent = error.message;
+                requestModal.showModal();
+            }
+        });
+        document.getElementById("closeRequestModal").addEventListener("click", () => requestModal.close());
+        document.getElementById("requestForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const formError = document.getElementById("requestFormError");
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.propiedadId = Number(data.propiedadId);
+            try {
+                const response = await fetch("/api/v1/admin/solicitudes", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json", "Accept": "application/json", [csrfHeader]: csrfToken},
+                    body: JSON.stringify(data)
+                });
+                if (!response.ok) throw new Error("Revisa los datos e intenta nuevamente.");
+                form.reset();
+                requestModal.close();
+                await loadRequests();
+            } catch (error) {
+                formError.textContent = error.message;
+            }
+        });
+        loadRequests().catch(error => {
+            requestError.textContent = error.message;
+            const row = document.createElement("tr");
+            const message = cell("No se pudieron cargar las solicitudes. Actualiza la página o vuelve a intentarlo.");
+            message.colSpan = 7;
+            message.className += " text-center text-red-300";
+            row.append(message);
+            requestBody.replaceChildren(row);
+        });
+    </script>
+</body>
+</html>

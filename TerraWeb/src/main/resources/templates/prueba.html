@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>P&amp;D Real Estate Group — Residencias Exclusivas</title>
+<!-- Fonts: Plus Jakarta Sans & Sora -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Sora:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#090A0F',
+              card: '#181A24',
+              surface: '#0D0E15',
+              surfaceAlt: '#11131C',
+              footer: '#07080C',
+              gold: '#FDE68A',
+              goldDark: '#D4AF37',
+              muted: '#7E8088',
+              border: 'rgba(255, 255, 255, 0.1)'
+            }
+          },
+          fontFamily: {
+            sora: ['Sora', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#090A0F] text-[#E3E1E9] font-sans antialiased selection:bg-[#FDE68A] selection:text-[#090A0F]">
+<!-- BEGIN: MainHeader -->
+<header class="w-full border-b border-white/10 bg-[#090A0F]/95 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+<!-- Brand Logo -->
+<a class="flex items-center gap-3.5 group" href="#">
+<div class="w-10 h-10 rounded bg-[#161822] border border-[#FDE68A]/30 flex items-center justify-center font-sora font-bold text-sm text-[#FDE68A] tracking-tight shrink-0 shadow-inner group-hover:border-[#FDE68A] transition-colors">
+          P&amp;D
+        </div>
+<div class="flex flex-col">
+<span class="text-xs font-bold font-sora tracking-wider text-white uppercase leading-tight group-hover:text-[#FDE68A] transition-colors">P&amp;D REAL ESTATE GROUP</span>
+<span class="text-[10px] font-semibold tracking-widest text-[#7E8088] uppercase mt-0.5">DESIGN SYSTEM</span>
+</div>
+</a>
+<!-- Floating Nav Pill -->
+<nav class="hidden md:flex items-center bg-[#13141C] border border-white/10 rounded-full px-6 py-2 shadow-xl shadow-black/40 gap-8 text-[15px] font-medium">
+<a class="text-[#FDE68A] font-semibold transition-colors px-2 py-1" href="#inicio">Inicio</a>
+<a class="text-white/80 hover:text-white transition-colors px-2 py-1" href="#propiedades">Buscar</a>
+<a class="text-white/80 hover:text-white transition-colors px-2 py-1" href="#agentes">Agentes</a>
+<a class="text-white/80 hover:text-white transition-colors px-2 py-1" href="#quienes-somos">Quiénes somos</a>
+</nav>
+<!-- Profile Action Button -->
+<div class="flex items-center">
+<button aria-label="Perfil de usuario" class="w-10 h-10 rounded-full bg-[#FDE68A] flex items-center justify-center text-[#090A0F] hover:bg-[#fff0a8] hover:scale-105 transition-all shadow-lg shadow-[#FDE68A]/20">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: HeroSection -->
+<section class="w-full border-b border-white/10 bg-[#090A0F] relative overflow-hidden" data-purpose="hero-section" id="inicio">
+<div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[640px] items-stretch">
+<!-- Hero Left (45%) -->
+<div class="lg:col-span-5 px-6 lg:pl-12 lg:pr-8 py-16 lg:py-24 flex flex-col justify-center z-10">
+<div class="inline-flex items-center gap-2 mb-6">
+<span class="w-2 h-2 rounded-full bg-[#FDE68A]"></span>
+<span class="text-xs uppercase tracking-[0.2em] font-semibold text-[#FDE68A]">Gestión Inmobiliaria de Alto Nivel</span>
+</div>
+<h1 class="font-sora text-4xl sm:text-5xl lg:text-[54px] xl:text-[58px] leading-[1.1] font-bold tracking-tight text-white mb-6">
+          Vende o alquila tu residencia al mejor valor de mercado
+        </h1>
+<p class="text-base text-[#94A3B8] leading-relaxed max-w-lg font-light mb-10">
+          Soluciones fiduciarias e inmobiliarias de alto perfil en las zonas más exclusivas del país. Diseñamos transacciones transparentes y de máximo rendimiento.
+        </p>
+<!-- CTA Actions -->
+<div class="flex flex-wrap items-center gap-6">
+<a class="bg-[#FDE68A] text-[#090A0F] text-xs font-bold uppercase tracking-widest px-8 py-4 rounded-full shadow-lg shadow-[#FDE68A]/15 hover:bg-[#fff0a8] hover:shadow-[#FDE68A]/30 transition-all duration-200" href="#contacto">
+            CONTACTAR ASESOR
+          </a>
+<a class="inline-flex items-center gap-3 text-xs tracking-widest font-semibold uppercase text-white/90 hover:text-white group" href="#como-funciona">
+<span class="w-11 h-11 rounded-full border border-white/30 flex items-center justify-center transition-colors group-hover:border-[#FDE68A] group-hover:bg-white/5">
+<svg class="w-3.5 h-3.5 text-[#FDE68A] ml-0.5 fill-current" viewbox="0 0 24 24">
+<polygon points="5 3 19 12 5 21 5 3"></polygon>
+</svg>
+</span>
+<span class="underline underline-offset-8 decoration-white/30 group-hover:decoration-[#FDE68A] transition-colors">CÓMO FUNCIONA</span>
+</a>
+</div>
+</div>
+<!-- Hero Right (55%): Architectural Photography -->
+<div class="lg:col-span-7 relative min-h-[460px] lg:min-h-full overflow-hidden bg-[#0D0E15]" data-purpose="hero-architecture-visual">
+<img alt="Residencia contemporánea de lujo con arquitectura geométrica limpia y cielo azul" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida/ALJJyrB6EsMo_F7X1B20x47TKOWQtpXZEQ46CF0NX5XsCv4keCXZMxIiC0or5vdESDFPxc1VxMcmnd12WjbBHAG_M0fRZiHI8Fd2YjzMYQRwC8AlikuBCxtgqGIB6zjvT2puUmuJAJO6bHMlnHkmlRi29QLg0gjAyMbOVgO8KhzjWC5SZQoiGH73pUb60mlVu8yUPxVENQlp1H5cZYD8ipaLG5zN5x3vwaibQG0Umb4ylz-UkQPgYOLTw8M4n54l"/>
+<!-- Soft gradient shadow on inner edge -->
+<div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#090A0F] to-transparent pointer-events-none hidden lg:block"></div>
+<div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#090A0F] to-transparent pointer-events-none lg:hidden"></div>
+</div>
+</div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: LatestPropertiesSection -->
+<section class="w-full bg-[#0D0E15] border-b border-white/10 py-24" data-purpose="latest-properties" id="propiedades">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+<!-- Section Header -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16">
+<div class="flex items-start gap-4">
+<!-- Monogram Symbol -->
+<div class="w-12 h-14 rounded-md border border-[#FDE68A]/40 flex flex-col items-center justify-center bg-[#13141C] text-[#FDE68A] font-sora font-bold text-xl tracking-tighter shrink-0 shadow-md">
+<span>P</span>
+<span class="text-xs leading-none -mt-1">&amp;D</span>
+</div>
+<div>
+<span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#FDE68A]">Catálogo Selecto</span>
+<h2 class="text-3xl sm:text-4xl font-sora font-bold text-white tracking-tight mt-1">Propiedades Exclusivas</h2>
+</div>
+</div>
+<p class="text-sm text-[#7E8088] max-w-md font-light leading-relaxed">
+          Tecnología fiduciaria propietaria, análisis predictivo de valor y asesoría discreta para presentar residencias con precio óptimo de mercado.
+        </p>
+</div>
+<!-- Properties 3-Card Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="group bg-[#161822] rounded-2xl border border-white/10 overflow-hidden flex flex-col hover:border-[#FDE68A]/40 transition-all duration-300 shadow-xl hover:-translate-y-1">
+<div class="relative h-80 overflow-hidden">
+<img alt="Casa Moderna Malecón Paul Harris" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD26_XWqgJ_PqU8AW0XE9y8s9f4L6H5gqhxDAOPebo_ZXUDHJpmjRAkFxIuQcWtQvl5P-V_uuJedbFD5RbhUnC1N09nVnwbC4L7M_no2OBWw7F3GO-Ne6nHyQmwCJTx9-yFY5mAudEymtQI9rhOZ0hFODdcQ3Mxsj22aYE0FwzcxJMOnSurVnEDKygguVESVSdu6akxPi1gNaTdTzLvCKSdVQVCabLEdaQyOnKnk8OX"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#161822] via-[#161822]/40 to-transparent"></div>
+<div class="absolute top-4 left-4">
+<span class="bg-[#090A0F]/80 backdrop-blur-md text-[#FDE68A] border border-[#FDE68A]/30 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                Venta Exclusiva
+              </span>
+</div>
+<div class="absolute bottom-4 left-6 right-6">
+<div class="text-2xl font-sora font-bold text-white tracking-tight">S/ 11,400,000</div>
+<p class="text-xs text-[#94A3B8] mt-1 font-medium truncate">Malecón Paul Harris, Barranco — Lima</p>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<h3 class="font-sora font-semibold text-lg text-white group-hover:text-[#FDE68A] transition-colors mb-4">
+              Casa Moderna Malecón Paul Harris
+            </h3>
+<div class="grid grid-cols-3 gap-2 py-3 border-y border-white/10 text-center text-xs text-[#94A3B8] mb-6">
+<div>
+<span class="block font-sora font-semibold text-white text-sm">03</span>
+                Dormitorios
+              </div>
+<div class="border-x border-white/10">
+<span class="block font-sora font-semibold text-white text-sm">04</span>
+                Baños
+              </div>
+<div>
+<span class="block font-sora font-semibold text-white text-sm">360 m²</span>
+                Área Total
+              </div>
+</div>
+<a class="w-full text-center bg-[#FDE68A] text-[#090A0F] font-sora font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl hover:bg-[#fff0a8] transition-colors shadow-md" href="#detalles">
+              VER DETALLES
+            </a>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-[#161822] rounded-2xl border border-white/10 overflow-hidden flex flex-col hover:border-[#FDE68A]/40 transition-all duration-300 shadow-xl hover:-translate-y-1">
+<div class="relative h-80 overflow-hidden">
+<img alt="Penthouse Pezet Golf View" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB6E-wOxcgeM8QOH4LdcCee-1tXk8oR-ZREWjZA_JuCLeWANHgQcEHAyIZ8RpZgIE8zxSluSQ-a1zJeEy4e0c36rjWvSFLJIOWCkTa0S8TalyXb9zsCXmLbGaeCsoxi_XMUwh1EEvwVWqwLVq8_jBNQzF2igAGMuYCU01JbZuFB3mTI7bR1EFWjwB7Fzb4YxvdBbZ5_BusSaGV8TYxW65HZ8_YLnYwvCO05hw9fvPO"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#161822] via-[#161822]/40 to-transparent"></div>
+<div class="absolute top-4 left-4">
+<span class="bg-[#090A0F]/80 backdrop-blur-md text-[#FDE68A] border border-[#FDE68A]/30 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                Vista al Golf
+              </span>
+</div>
+<div class="absolute bottom-4 left-6 right-6">
+<div class="text-2xl font-sora font-bold text-white tracking-tight">S/ 18,900,000</div>
+<p class="text-xs text-[#94A3B8] mt-1 font-medium truncate">Avenida Juan Pezet, San Isidro — Lima</p>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<h3 class="font-sora font-semibold text-lg text-white group-hover:text-[#FDE68A] transition-colors mb-4">
+              Penthouse Pezet Golf View
+            </h3>
+<div class="grid grid-cols-3 gap-2 py-3 border-y border-white/10 text-center text-xs text-[#94A3B8] mb-6">
+<div>
+<span class="block font-sora font-semibold text-white text-sm">04</span>
+                Dormitorios
+              </div>
+<div class="border-x border-white/10">
+<span class="block font-sora font-semibold text-white text-sm">05</span>
+                Baños
+              </div>
+<div>
+<span class="block font-sora font-semibold text-white text-sm">520 m²</span>
+                Área Total
+              </div>
+</div>
+<a class="w-full text-center bg-[#FDE68A] text-[#090A0F] font-sora font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl hover:bg-[#fff0a8] transition-colors shadow-md" href="#detalles">
+              VER DETALLES
+            </a>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-[#161822] rounded-2xl border border-white/10 overflow-hidden flex flex-col hover:border-[#FDE68A]/40 transition-all duration-300 shadow-xl hover:-translate-y-1">
+<div class="relative h-80 overflow-hidden">
+<img alt="Villa Panorámica Las Casuarinas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcoCXFMRd6eOORj-Id2ReS0xhFIwy2rIu1pvMnTqK4HFb71kkz8L45aSiJ_ibpitElrKmlaxdD5300lQfGEwJPydZYrQ1jwxcxjTQuxw9pqWsY3jU3Xie-mHtLqnOMZYmIaDUZX5R_QFLwI4qflDrc9g5EEbVP0eSlrEaL2kyAITSeM9HOqHs7QgC3Z7Tz0nJHvNyT30ykjuKJ4iJEq2re6aEZGcUofQWVl1ctKy40"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#161822] via-[#161822]/40 to-transparent"></div>
+<div class="absolute top-4 left-4">
+<span class="bg-[#090A0F]/80 backdrop-blur-md text-[#FDE68A] border border-[#FDE68A]/30 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                Panorámica
+              </span>
+</div>
+<div class="absolute bottom-4 left-6 right-6">
+<div class="text-2xl font-sora font-bold text-white tracking-tight">S/ 15,200,000</div>
+<p class="text-xs text-[#94A3B8] mt-1 font-medium truncate">Las Casuarinas Alta, Surco — Lima</p>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<h3 class="font-sora font-semibold text-lg text-white group-hover:text-[#FDE68A] transition-colors mb-4">
+              Villa Panorámica Las Casuarinas
+            </h3>
+<div class="grid grid-cols-3 gap-2 py-3 border-y border-white/10 text-center text-xs text-[#94A3B8] mb-6">
+<div>
+<span class="block font-sora font-semibold text-white text-sm">05</span>
+                Dormitorios
+              </div>
+<div class="border-x border-white/10">
+<span class="block font-sora font-semibold text-white text-sm">06</span>
+                Baños
+              </div>
+<div>
+<span class="block font-sora font-semibold text-white text-sm">780 m²</span>
+                Área Total
+              </div>
+</div>
+<a class="w-full text-center bg-[#FDE68A] text-[#090A0F] font-sora font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl hover:bg-[#fff0a8] transition-colors shadow-md" href="#detalles">
+              VER DETALLES
+            </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: LatestPropertiesSection -->
+<!-- BEGIN: TestimonialsSection -->
+<section class="w-full bg-[#11131C] border-b border-white/10 py-24" data-purpose="testimonials" id="testimonios">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+<!-- Testimonials Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+<div>
+<div class="flex items-center gap-1.5 mb-3 text-[#FDE68A]">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"></path></svg>
+<svg class="w-3.5 h-3.5 fill-current opacity-70" viewbox="0 0 24 24"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"></path></svg>
+<span class="text-xs uppercase tracking-widest font-semibold ml-2 text-[#FDE68A]">Testimonios Reales</span>
+</div>
+<h2 class="text-3xl sm:text-4xl font-sora font-bold text-white tracking-tight">Lo Que Dicen Nuestros Clientes</h2>
+<p class="text-sm text-[#7E8088] max-w-lg font-light mt-3 leading-relaxed">
+            Descubra las experiencias de propietarios e inversores patrimoniales que confiaron en P&amp;D para sus operaciones de mayor valor.
+          </p>
+</div>
+<a class="inline-flex items-center gap-2 self-start md:self-auto bg-[#181A24] border border-white/10 hover:border-[#FDE68A]/40 text-xs font-semibold uppercase tracking-wider text-white px-6 py-3.5 rounded-full transition-colors" href="#todos-testimonios">
+          Ver Todos los Testimonios
+        </a>
+</div>
+<!-- Testimonial Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+<!-- Testimonial 1 -->
+<div class="bg-[#181A24] border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:border-white/20 transition-all shadow-lg">
+<div>
+<!-- 5 Golden Stars -->
+<div class="flex items-center gap-1.5 text-[#FDE68A] mb-6">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+</div>
+<h4 class="text-white font-sora font-semibold text-lg mb-3">¡Servicio Excepcional!</h4>
+<p class="text-[#94A3B8] text-sm leading-relaxed mb-8">
+              "Nuestra experiencia con P&amp;D fue inmejorable. El equipo estructuró la venta de nuestro penthouse con máxima reserva y un valor superior al proyectado en solo 3 semanas."
+            </p>
+</div>
+<div class="flex items-center gap-3 pt-6 border-t border-white/5">
+<img alt="Wade Warren" class="w-12 h-12 rounded-full object-cover border border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqTlzY4MIJcevSgL0-rRdcHBqstN8tCn9rfdmvu32zOQomQg7_geqPIY4IT1qPsBa3ugDn_KpvCmry3r_HGuCcuo584PK5q9K2VQ6xqLvuAg-Hw3zdXpWRRwYKQgRh0a0yH9Dqi_8w8EROHzroiGfc172fKPPJGR8OlNVhS4dOoHl24jjF8cyOehgs2DF58IRAbzOfgrbyF5YaReFx5LIbSIshD0Ec_qvYvRIvCllr"/>
+<div>
+<span class="block text-white font-sora font-semibold text-sm">Wade Warren</span>
+<span class="text-xs text-[#7E8088]">Lima, Perú</span>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-[#181A24] border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:border-white/20 transition-all shadow-lg">
+<div>
+<!-- 5 Golden Stars -->
+<div class="flex items-center gap-1.5 text-[#FDE68A] mb-6">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+</div>
+<h4 class="text-white font-sora font-semibold text-lg mb-3">Eficientes y Confiables</h4>
+<p class="text-[#94A3B8] text-sm leading-relaxed mb-8">
+              "P&amp;D nos brindó una atención impecable de inicio a fin. Su análisis del mercado inmobiliario corporativo y residencial en San Isidro marcó la diferencia absoluta."
+            </p>
+</div>
+<div class="flex items-center gap-3 pt-6 border-t border-white/5">
+<img alt="Emelie Thomson" class="w-12 h-12 rounded-full object-cover border border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5e5GMOVzs3Q7-u5DPCmI70mZpYeoldtWDrKCO0rVpnPQzngyjYxjFMFmab6jyPakmTrLJwtDl1IpvcfwMPaIVoePIA84FpjXgqhmwG7Hx6CNRwjVV69seZX6rzVEq8WgMfH57ZB8Qd7KgZXUPH0YW2wmREJw12S-hLuNNzMeiOOUeF2MkieZM95nlNrxiUUZHetr9U2hFaoZrvp6YCBYJ4PQ0-WR4eIS28IWgt60v"/>
+<div>
+<span class="block text-white font-sora font-semibold text-sm">Emelie Thomson</span>
+<span class="text-xs text-[#7E8088]">San Isidro, Lima</span>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-[#181A24] border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:border-white/20 transition-all shadow-lg">
+<div>
+<!-- 5 Golden Stars -->
+<div class="flex items-center gap-1.5 text-[#FDE68A] mb-6">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+</div>
+<h4 class="text-white font-sora font-semibold text-lg mb-3">Asesores de Máxima Confianza</h4>
+<p class="text-[#94A3B8] text-sm leading-relaxed mb-8">
+              "El acompañamiento fiduciario y legal nos transmitió tranquilidad en todo momento. Su cartera de compradores calificados es la más sólida que hemos conocido."
+            </p>
+</div>
+<div class="flex items-center gap-3 pt-6 border-t border-white/5">
+<img alt="John Mans" class="w-12 h-12 rounded-full object-cover border border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdId7IGOv25dhl1pZzngFYUiNkVkJ8j53TKRkPkxARBL7HircHBqEEKaAQRbBWz7shXJ9Z9iSZb14fWYDxjT39W_0pk62KWwWCFYu5_4pruK7hUs17s7Zl-EUYa5TTzKHmTaaa1fGL7CLlh779pgGsCBE0wc5268ddeEerZtLZjcD5ausKkYoAruDKzT9C6RpqqaQLSr1r5CU8lgYwWKqMt8QIYhsD__WyuWyQCBLJ"/>
+<div>
+<span class="block text-white font-sora font-semibold text-sm">John Mans</span>
+<span class="text-xs text-[#7E8088]">Miraflores, Lima</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Testimonial Pagination Bar -->
+<div class="flex items-center justify-between pt-6 border-t border-white/10">
+<span class="text-sm font-sora font-semibold text-[#7E8088]">
+<strong class="text-white">01</strong> de 10
+        </span>
+<div class="flex items-center gap-3">
+<button aria-label="Anterior" class="w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-[#FDE68A] hover:text-[#FDE68A] transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<button aria-label="Siguiente" class="w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-[#FDE68A] hover:text-[#FDE68A] transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: TestimonialsSection -->
+<!-- BEGIN: MainFooter -->
+<footer class="w-full bg-[#07080C] border-t border-white/10 pt-20 pb-12" data-purpose="footer">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+<!-- Top Grid: Brand & Newsletter + Link Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+<!-- Left Brand & Newsletter (Col 1-5) -->
+<div class="lg:col-span-5 flex flex-col justify-between pr-0 lg:pr-8">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-9 h-9 rounded bg-[#161822] border border-[#FDE68A]/30 flex items-center justify-center font-sora font-bold text-xs text-[#FDE68A]">
+                P&amp;D
+              </div>
+<span class="font-sora font-bold text-base text-white tracking-wider uppercase">P&amp;D REAL ESTATE GROUP</span>
+</div>
+<p class="text-sm text-[#7E8088] max-w-sm font-light mb-8">
+              Lideramos la comercialización fiduciaria y adquisición de residencias de alto nivel patrimonial con discreción y excelencia comprobada.
+            </p>
+</div>
+<!-- Newsletter Box -->
+<div class="relative max-w-md">
+<div class="flex items-center rounded-xl bg-[#13141C] border border-white/15 p-1.5 focus-within:border-[#FDE68A]/50 transition-colors shadow-inner">
+<div class="pl-3 text-[#7E8088]">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</div>
+<input class="w-full bg-transparent border-0 text-sm text-white placeholder-[#7E8088] focus:ring-0 px-3 py-2 outline-none" placeholder="Ingresa tu correo" type="email"/>
+<button aria-label="Suscribirse al newsletter" class="bg-[#FDE68A] hover:bg-[#fff0a8] text-[#090A0F] p-3 rounded-lg transition-colors flex items-center justify-center shrink-0">
+<svg class="w-4 h-4 fill-current rotate-45 -mr-0.5" viewbox="0 0 24 24">
+<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+<!-- Navigation Columns (Col 6-12) -->
+<div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8">
+<!-- Column: Inicio -->
+<div>
+<h4 class="text-xs font-sora font-semibold text-white tracking-widest uppercase mb-5">Inicio</h4>
+<ul class="space-y-3 text-sm text-[#7E8088]">
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#inicio">Hero Principal</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#propiedades">Propiedades</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#testimonios">Testimonios</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#preguntas">FAQ</a></li>
+</ul>
+</div>
+<!-- Column: Sobre Nosotros -->
+<div>
+<h4 class="text-xs font-sora font-semibold text-white tracking-widest uppercase mb-5">Sobre Nosotros</h4>
+<ul class="space-y-3 text-sm text-[#7E8088]">
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#historia">Nuestra Historia</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#equipo">Nuestro Equipo</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#metodologia">Cómo Funciona</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#clientes">Clientes</a></li>
+</ul>
+</div>
+<!-- Column: Propiedades & Servicios -->
+<div>
+<h4 class="text-xs font-sora font-semibold text-white tracking-widest uppercase mb-5">Propiedades</h4>
+<ul class="space-y-3 text-sm text-[#7E8088]">
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#portafolio">Portafolio</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#exclusivas">Exclusivas</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#tasaciones">Tasaciones</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#fiduciaria">Asesoría Fiduciaria</a></li>
+</ul>
+</div>
+<!-- Column: Contacto -->
+<div>
+<h4 class="text-xs font-sora font-semibold text-white tracking-widest uppercase mb-5" id="contacto">Contacto</h4>
+<ul class="space-y-3 text-sm text-[#7E8088]">
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#contacto-form">Formulario</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="#oficinas">Oficinas Lima</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="tel:+5117192000">+51 (1) 719-2000</a></li>
+<li><a class="hover:text-[#FDE68A] transition-colors" href="mailto:info@pdrealestate.pe">info@pdrealestate.pe</a></li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Bottom Sub-Footer Bar -->
+<div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+<div class="flex flex-wrap items-center gap-6 text-xs text-[#7E8088]">
+<span>© 2025 P&amp;D Real Estate Group. Todos los derechos reservados.</span>
+<a class="hover:text-white transition-colors" href="#terminos">Términos y Condiciones</a>
+<a class="hover:text-white transition-colors" href="#privacidad">Política de Privacidad</a>
+</div>
+<!-- Social Icons -->
+<div class="flex items-center gap-3">
+<a aria-label="Facebook" class="w-9 h-9 rounded-full bg-[#13141C] border border-white/10 flex items-center justify-center text-white/80 hover:text-[#FDE68A] hover:border-[#FDE68A]/40 transition-colors" href="#">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+</a>
+<a aria-label="LinkedIn" class="w-9 h-9 rounded-full bg-[#13141C] border border-white/10 flex items-center justify-center text-white/80 hover:text-[#FDE68A] hover:border-[#FDE68A]/40 transition-colors" href="#">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1-2 2 2 2 0 0 1 2-2z"></path></svg>
+</a>
+<a aria-label="Twitter / X" class="w-9 h-9 rounded-full bg-[#13141C] border border-white/10 flex items-center justify-center text-white/80 hover:text-[#FDE68A] hover:border-[#FDE68A]/40 transition-colors" href="#">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+</a>
+<a aria-label="YouTube" class="w-9 h-9 rounded-full bg-[#13141C] border border-white/10 flex items-center justify-center text-white/80 hover:text-[#FDE68A] hover:border-[#FDE68A]/40 transition-colors" href="#">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+</body></html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crear cuenta | P&amp;D Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dark": "#0b0d13",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface-container-low": "#1a1b21",
+                        "surface-container": "#1e1f25",
+                        "surface-container-high": "#292a2f",
+                        "surface-container-highest": "#34343a",
+                        "on-surface": "#e3e1e9",
+                        "on-surface-variant": "#dbc2b0",
+                        "text-muted": "#94a3b8",
+                        primary: "#ffb77d",
+                        "accent-gold": "#fde68a",
+                        error: "#ffb4ab"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter", "sans-serif"],
+                        "body-sm": ["Inter", "sans-serif"],
+                        "headline-md": ["Sora", "sans-serif"],
+                        "label-md": ["Sora", "sans-serif"],
+                        "label-sm": ["Sora", "sans-serif"]
+                    },
+                    fontSize: {
+                        "headline-md": ["36px", { lineHeight: "42px", letterSpacing: "-0.03em", fontWeight: "600" }],
+                        "body-md": ["15px", { lineHeight: "24px" }],
+                        "body-sm": ["13px", { lineHeight: "20px" }],
+                        "label-md": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+                        "label-sm": ["11px", { lineHeight: "16px", fontWeight: "600" }]
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible {
+            outline: 2px solid #fde68a;
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="relative min-h-screen bg-surface-dark px-4 py-8 font-body-md text-on-surface antialiased sm:px-8">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div class="absolute -top-40 left-1/2 h-[480px] w-[780px] -translate-x-1/2 rounded-full bg-primary/5 blur-[140px]"></div>
+        <div class="absolute bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-accent-gold/5 blur-[160px]"></div>
+    </div>
+
+    <main class="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-xl flex-col justify-center py-4">
+        <div class="mb-6 flex items-center justify-between gap-4"></div>
+
+        <section class="relative overflow-hidden rounded-2xl bg-surface-container-low p-6 shadow-2xl sm:p-10"
+            aria-labelledby="registration-title">
+            <div class="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-accent-gold/[0.04] blur-3xl"
+                aria-hidden="true"></div>
+
+            <header class="relative z-10 mb-8 text-center">
+                <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-container-highest text-accent-gold">
+                    <span class="font-headline-md text-headline-md" aria-hidden="true">P&amp;D</span>
+                </div>
+                <p class="mb-2 font-label-sm text-label-sm text-accent-gold">P&amp;D Real Estate Group</p>
+                <h1 class="font-headline-md text-headline-md text-on-surface" id="registration-title">Crear cuenta</h1>
+                <p class="mx-auto mt-3 max-w-md text-body-sm text-text-muted">
+                    Regístrate para consultar propiedades y gestionar tus preferencias.
+                </p>
+            </header>
+
+            <form class="relative z-10 flex flex-col gap-5" method="post" th:action="@{/registro}"
+                th:object="${registroForm}">
+                <div>
+                    <label class="mb-1.5 block font-label-sm text-label-sm text-on-surface-variant" for="nombre">
+                        Nombre completo
+                    </label>
+                    <input class="w-full rounded-lg bg-surface-container-high px-4 py-3 text-body-md text-on-surface placeholder:text-text-muted focus:bg-surface-container-highest focus:outline-none"
+                        id="nombre" type="text" autocomplete="name" placeholder="Ej. Ana Pérez"
+                        required maxlength="120" th:field="*{nombre}">
+                    <p class="mt-1 text-body-sm text-error" th:errors="*{nombre}"></p>
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block font-label-sm text-label-sm text-on-surface-variant" for="correo">
+                        Correo electrónico
+                    </label>
+                    <input class="w-full rounded-lg bg-surface-container-high px-4 py-3 text-body-md text-on-surface placeholder:text-text-muted focus:bg-surface-container-highest focus:outline-none"
+                        id="correo" type="email" autocomplete="email" placeholder="ana@correo.com"
+                        required maxlength="180" th:field="*{correo}">
+                    <p class="mt-1 text-body-sm text-error" th:errors="*{correo}"></p>
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block font-label-sm text-label-sm text-on-surface-variant" for="telefono">
+                        Teléfono o WhatsApp
+                    </label>
+                    <input class="w-full rounded-lg bg-surface-container-high px-4 py-3 text-body-md text-on-surface placeholder:text-text-muted focus:bg-surface-container-highest focus:outline-none"
+                        id="telefono" type="tel" autocomplete="tel" placeholder="+51 987 654 321"
+                        required th:field="*{telefono}" maxlength="25">
+                    <p class="mt-1 text-body-sm text-error" th:errors="*{telefono}"></p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block font-label-sm text-label-sm text-on-surface-variant" for="password">
+                            Contraseña
+                        </label>
+                        <div class="relative">
+                            <input class="w-full rounded-lg bg-surface-container-high px-4 py-3 pr-11 text-body-md text-on-surface placeholder:text-text-muted focus:bg-surface-container-highest focus:outline-none"
+                                id="password" type="password" autocomplete="new-password" placeholder="12 caracteres mínimo"
+                                required minlength="12" maxlength="72" th:field="*{password}">
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-text-muted hover:text-accent-gold"
+                                type="button" aria-label="Mostrar contraseña" aria-pressed="false"
+                                data-password-toggle="password">
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">visibility</span>
+                            </button>
+                        </div>
+                        <p class="mt-1 text-body-sm text-text-muted" id="strength-text">Mínimo 12 caracteres</p>
+                        <p class="mt-1 text-body-sm text-error" th:errors="*{password}"></p>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block font-label-sm text-label-sm text-on-surface-variant" for="confirmarPassword">
+                            Confirmar contraseña
+                        </label>
+                        <div class="relative">
+                            <input class="w-full rounded-lg bg-surface-container-high px-4 py-3 pr-11 text-body-md text-on-surface placeholder:text-text-muted focus:bg-surface-container-highest focus:outline-none"
+                                id="confirmarPassword" type="password" autocomplete="new-password"
+                                placeholder="Repite la contraseña" required minlength="12" maxlength="72"
+                                th:field="*{confirmarPassword}">
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-text-muted hover:text-accent-gold"
+                                type="button" aria-label="Mostrar confirmación" aria-pressed="false"
+                                data-password-toggle="confirmarPassword">
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">visibility</span>
+                            </button>
+                        </div>
+                        <p class="mt-1 text-body-sm text-error" th:errors="*{confirmarPassword}"></p>
+                    </div>
+                </div>
+
+                <label class="flex items-start gap-3 text-body-sm text-text-muted">
+                    <input class="mt-1 h-4 w-4 shrink-0 accent-accent-gold" id="aceptaTerminos"
+                        type="checkbox" required th:field="*{aceptaTerminos}">
+                    <span>Acepto los términos de servicio y la política de privacidad de P&amp;D Real Estate.</span>
+                </label>
+                <p class="-mt-4 text-body-sm text-error" th:errors="*{aceptaTerminos}"></p>
+
+                <button class="mt-1 flex w-full items-center justify-center gap-2 rounded-full bg-accent-gold px-8 py-3.5 font-label-md text-label-md text-surface-dark transition-colors hover:bg-primary"
+                    type="submit">
+                    Crear cuenta de cliente
+                    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+                </button>
+            </form>
+
+            <footer class="relative z-10 mt-7 border-t border-surface-container-highest/60 pt-5 text-center">
+                <p class="text-body-sm text-on-surface-variant">
+                    ¿Ya tienes una cuenta?
+                    <a class="ml-1 font-semibold text-accent-gold hover:underline" th:href="@{/login}">Iniciar sesión</a>
+                </p>
+                <p class="mt-4 font-label-sm text-label-sm text-text-muted">
+                    El sistema asigna el acceso de cliente. El registro no permite crear cuentas administrativas.
+                </p>
+            </footer>
+        </section>
+    </main>
+
+    <script>
+        document.querySelectorAll("[data-password-toggle]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const input = document.getElementById(button.dataset.passwordToggle);
+                const icon = button.querySelector(".material-symbols-outlined");
+                const visible = input.type === "password";
+                input.type = visible ? "text" : "password";
+                button.setAttribute("aria-pressed", String(visible));
+                button.setAttribute("aria-label", visible ? "Ocultar contraseña" : "Mostrar contraseña");
+                icon.textContent = visible ? "visibility_off" : "visibility";
+            });
+        });
+
+        const passwordInput = document.getElementById("password");
+        passwordInput.addEventListener("input", () => {
+            const length = passwordInput.value.length;
+            document.getElementById("strength-text").textContent =
+                length >= 12 ? "Longitud mínima alcanzada" : `Faltan ${12 - length} caracteres`;
+        });
+    </script>
+</body>
+
+</html>

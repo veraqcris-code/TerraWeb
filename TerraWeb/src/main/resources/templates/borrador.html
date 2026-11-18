@@ -1,0 +1,581 @@
+<!DOCTYPE html><html class="dark" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_dashboard" name="shell-type">
+<title>P&amp;D Real Estate - Gestión Operativa de Propiedades (CRM)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #0d0e13;
+        color: #e3e1e9;
+      }
+      body {
+        overflow-x: hidden;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-dark": "#0B0D13",
+            "surface-container-lowest": "#0a0b0f",
+            "surface-container-low": "#13141a",
+            "surface-container": "#191b22",
+            "surface-container-high": "#232630",
+            "surface-container-highest": "#2e323e",
+            "background": "#0d0e13",
+            "surface": "#121318",
+            "on-surface": "#f1f3f9",
+            "on-surface-variant": "#9ca3af",
+            "text-muted": "#717a8c",
+            "primary": "#ffb77d",
+            "accent-gold": "#FDE68A",
+            "border-subtle": "rgba(255, 255, 255, 0.07)"
+          },
+          fontFamily: {
+            headline: ["Sora", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background font-body text-on-surface antialiased flex min-h-screen w-full">
+<!-- SIDEBAR LATERAL IZQUIERDO COMPACTO -->
+<aside class="w-64 shrink-0 bg-surface-container-lowest border-r border-border-subtle flex flex-col justify-between py-6 px-4 z-40 fixed h-screen top-0 left-0">
+<div class="flex flex-col gap-6">
+<!-- Logo P&D -->
+<div class="flex items-center gap-3 px-3 py-1">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high border border-border-subtle flex items-center justify-center shrink-0">
+<span class="font-headline font-bold text-xs tracking-wider text-[#FDE68A]">PD</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline text-[13px] font-bold uppercase tracking-wider text-on-surface leading-tight">P&amp;D REAL ESTATE</span>
+<span class="font-headline text-[9px] uppercase tracking-widest text-text-muted">Group Portfolio</span>
+</div>
+</div>
+<!-- Menú de navegación -->
+<nav class="flex flex-col gap-1.5">
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-headline text-[13px]">Resumen</span>
+</a>
+<!-- Activo -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-surface-container-high text-on-surface font-semibold border border-border-subtle text-sm transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px] text-[#FDE68A]">apartment</span>
+<span class="font-headline text-[13px] text-white">Propiedades</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">mark_email_unread</span>
+<span class="font-headline text-[13px]">Solicitudes / Leads</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+<span class="font-headline text-[13px]">Agentes</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+<span class="font-headline text-[13px]">Configuración</span>
+</a>
+</nav>
+</div>
+<!-- Perfil Super Admin -->
+<div class="bg-surface-container-low border border-border-subtle p-3 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="relative shrink-0">
+<div class="w-8 h-8 rounded-full bg-amber-200/20 border border-[#FDE68A]/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#FDE68A] text-[18px]">person</span>
+</div>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#FDE68A] ring-2 ring-surface-container-low"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-xs font-semibold text-on-surface truncate">Directorio P&amp;D</span>
+<span class="font-body text-[10px] text-text-muted truncate">Super Admin</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-muted text-[18px] shrink-0">unfold_more</span>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL (SIN SCROLL HORIZONTAL) -->
+<main class="ml-64 flex-1 min-w-0 w-[calc(100%-16rem)] overflow-x-hidden px-8 py-6 flex flex-col gap-6">
+<!-- Header Principal -->
+<header class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-1">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#FDE68A]"></span>
+<span class="font-headline text-[11px] font-semibold uppercase tracking-widest text-[#FDE68A]/90">CONSOLA CENTRAL / CARTERA EXCLUSIVA</span>
+</div>
+<h1 class="font-headline text-2xl lg:text-3xl font-bold text-white tracking-tight">Gestión de Propiedades</h1>
+<p class="font-body text-xs lg:text-sm text-text-muted">Administra tu catálogo de propiedades, asigna asesores y controla su disponibilidad</p>
+</div>
+<!-- Acciones de Encabezado -->
+<div class="flex items-center gap-3 shrink-0">
+<button class="px-4 py-2.5 rounded-xl bg-surface-container-high border border-border-subtle text-on-surface font-headline text-xs font-semibold flex items-center gap-2 hover:bg-surface-container-highest transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[17px] text-text-muted">download</span>
+<span>Exportar Catálogo</span>
+</button>
+<button class="px-4 py-2.5 rounded-xl font-headline text-xs font-semibold flex items-center gap-2 transition-transform active:scale-[0.98] shadow-sm bg-[#FDE68A] hover:bg-[#fae075] text-[#121318]" type="button">
+<span class="material-symbols-outlined text-[18px] font-bold">add</span>
+<span>Registrar Nueva Propiedad</span>
+</button>
+</div>
+</header>
+<!-- Controles, Pestañas y Filtros -->
+<section class="bg-surface-container-low border border-border-subtle rounded-2xl p-4 flex flex-col gap-3.5 shadow-sm">
+<!-- Pestañas y Orden -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
+<div class="flex items-center gap-1.5">
+<button class="px-3.5 py-1.5 rounded-xl font-headline text-xs font-semibold transition-colors bg-surface-container-high text-[#FDE68A] border border-border-subtle" type="button">
+            Todas <span class="ml-1 opacity-70">34</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-xl font-headline text-xs text-text-muted hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+            Disponibles <span class="ml-1 opacity-70">22</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-xl font-headline text-xs text-text-muted hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+            Reservadas <span class="ml-1 opacity-70">8</span>
+</button>
+</div>
+<button class="px-3.5 py-1.5 bg-surface-container text-on-surface font-headline text-xs font-medium rounded-xl flex items-center gap-1.5 hover:bg-surface-container-high transition-colors border border-border-subtle" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-muted">swap_vert</span>
+<span>Más recientes</span>
+</button>
+</div>
+<!-- Barra de Filtros Inputs -->
+<div class="flex flex-col md:flex-row items-center gap-2.5 w-full">
+<!-- Input de búsqueda -->
+<div class="relative w-full md:w-[32%] shrink-0">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[17px] text-text-muted">search</span>
+<input class="w-full h-9 bg-surface-container-lowest text-on-surface text-xs rounded-xl pl-9 pr-3 focus:outline-none border border-border-subtle placeholder-text-muted/60 focus:border-[#FDE68A]/40 transition-colors" placeholder="Buscar por nombre, código o dirección..." type="text">
+</div>
+<!-- Dropdowns de filtrado -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:flex-1">
+<button class="h-9 px-3 bg-surface-container text-on-surface font-headline text-xs rounded-xl flex items-center justify-between gap-1 hover:bg-surface-container-high transition-colors border border-border-subtle" type="button">
+<span class="truncate"><span class="text-text-muted">Operación:</span> Todas</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted shrink-0">expand_more</span>
+</button>
+<button class="h-9 px-3 bg-surface-container text-on-surface font-headline text-xs rounded-xl flex items-center justify-between gap-1 hover:bg-surface-container-high transition-colors border border-border-subtle" type="button">
+<span class="truncate"><span class="text-text-muted">Distrito:</span> Todos</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted shrink-0">expand_more</span>
+</button>
+<button class="h-9 px-3 bg-surface-container text-on-surface font-headline text-xs rounded-xl flex items-center justify-between gap-1 hover:bg-surface-container-high transition-colors border border-border-subtle" type="button">
+<span class="truncate"><span class="text-text-muted">Tipo:</span> Todos</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted shrink-0">expand_more</span>
+</button>
+<button class="h-9 px-3 bg-surface-container text-on-surface font-headline text-xs rounded-xl flex items-center justify-between gap-1 hover:bg-surface-container-high transition-colors border border-border-subtle" type="button">
+<span class="flex items-center gap-1 truncate">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">payments</span>
+<span class="truncate">Precio</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted shrink-0">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- TABLA COMPLETA (AJUSTE PRECISO SIN DESBORDES NI SCROLLBAR) -->
+<div class="bg-surface-container-low border border-border-subtle rounded-2xl overflow-hidden shadow-sm flex flex-col w-full">
+<div class="w-full">
+<table class="w-full table-fixed text-left border-collapse">
+<colgroup>
+<!-- Checkbox + Inmueble -->
+<col style="width: 29%;">
+<!-- Código / Tipo -->
+<col style="width: 13%;">
+<!-- Valor comercial -->
+<col style="width: 16%;">
+<!-- Ubicación -->
+<col style="width: 12%;">
+<!-- Asesor -->
+<col style="width: 14%;">
+<!-- Estado -->
+<col style="width: 8%;">
+<!-- Acciones -->
+<col style="width: 8%;">
+</colgroup>
+<thead>
+<tr class="bg-surface-container-lowest border-b border-border-subtle text-slate-400 font-headline text-[11px] font-semibold uppercase tracking-wider">
+<th class="py-3 px-4" scope="col">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 rounded cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<span>INMUEBLE</span>
+</div>
+</th>
+<th class="py-3 px-2" scope="col">CÓDIGO / TIPO</th>
+<th class="py-3 px-2" scope="col">VALOR COMERCIAL</th>
+<th class="py-3 px-2" scope="col">UBICACIÓN</th>
+<th class="py-3 px-2" scope="col">ASESOR ASIGNADO</th>
+<th class="py-3 px-2 text-center" scope="col">ESTADO</th>
+<th class="py-3 pr-4 pl-2 text-right" scope="col">ACCIONES</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle font-body text-xs text-on-surface">
+<!-- Fila 1 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3 min-w-0">
+<input class="w-4 h-4 rounded shrink-0 cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="Modern beachfront mansion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCXZ_D1eV5QR9GcSCg6Cdwp9vwcAnA6s0A7pagnxk5C7r05eQQN10hFbDE1uk1aM0VDu7_-gTP4BmxPmd2CmyH_G4-MHStgFhlVIEyrP0gKyMo22Y2lxrVRrTx7gn0R9KV1L3h7fojVbXQ7zYfuV1yALg0dEt9UTVHhd4xOY35y6-owhaHAxAdZ_kvXPA7_74-i1Uukj_azZueDR3GlkY-9aP8iWZXzRi6WvhlvVgn">
+</div>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-headline font-semibold text-xs text-white truncate hover:text-[#FDE68A] cursor-pointer">Casa Moderna Malecón Paul Harris</span>
+<span class="text-[11px] text-text-muted truncate mt-0.5">480 m² · 4 Suites · Vista al Mar</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-[11px] text-white">PD-BAR-018</span>
+<span class="text-[11px] text-text-muted truncate">Residencia de Autor</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<div class="mb-0.5">
+<span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-headline font-semibold tracking-wider bg-surface-container-high text-[#FDE68A] border border-border-subtle">VENTA</span>
+</div>
+<span class="font-headline font-semibold text-xs text-white">S/ 11,400,000</span>
+<span class="text-[10px] text-text-muted">~$3,080,000 USD</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">location_on</span>
+<span class="truncate">Barranco</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center font-headline text-[10px] font-bold text-on-surface shrink-0">VR</div>
+<span class="truncate">Valeria Rossi</span>
+</div>
+</td>
+<td class="py-3 px-2 text-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-headline font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Disponible
+                </span>
+</td>
+<td class="py-3 pr-4 pl-2 text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="font-headline text-[11px] font-medium text-text-muted hover:text-white px-1.5 py-1 transition-colors" type="button">Editar</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 2 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3 min-w-0">
+<input class="w-4 h-4 rounded shrink-0 cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="Luxury penthouse terrace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw5vgOReH52g3wjeQnLKb5WmIYf9J1F1w9RZXztHtg03lxQeKmi3i4c-_bPVIPs-aQnVNpyZIowaciE7i0NEdUFz28UcVUN95JNxTO6oUM2iQnIxJO-gbSpZvJpCPyIVRVd82OiAwBILl3QLiFpM_qBRvm1gKIELx_KG9oN3TxZf5xUfytar2-XWOkj3Vq7GhECCumI9KL5DJHwH50CWZPbm9Y5yXGruaZJRskVynj">
+</div>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-headline font-semibold text-xs text-white truncate hover:text-[#FDE68A] cursor-pointer">Penthouse Pezet Golf View</span>
+<span class="text-[11px] text-text-muted truncate mt-0.5">620 m² · 4 Suites · Terraza &amp; Pool</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-[11px] text-white">PD-ISID-042</span>
+<span class="text-[11px] text-text-muted truncate">Penthouse Triplex</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<div class="mb-0.5">
+<span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-headline font-semibold tracking-wider bg-surface-container-high text-[#FDE68A] border border-border-subtle">VENTA</span>
+</div>
+<span class="font-headline font-semibold text-xs text-white">S/ 18,900,000</span>
+<span class="text-[10px] text-text-muted">~$5,100,000 USD</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">location_on</span>
+<span class="truncate">San Isidro</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center font-headline text-[10px] font-bold text-on-surface shrink-0">CM</div>
+<span class="truncate">Carlos Morales</span>
+</div>
+</td>
+<td class="py-3 px-2 text-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-headline font-semibold bg-amber-950/70 text-[#FDE68A] border border-[#FDE68A]/20">
+<span class="w-1.5 h-1.5 rounded-full bg-[#FDE68A]"></span>Reservada
+                </span>
+</td>
+<td class="py-3 pr-4 pl-2 text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="font-headline text-[11px] font-medium text-text-muted hover:text-white px-1.5 py-1 transition-colors" type="button">Editar</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 3 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3 min-w-0">
+<input class="w-4 h-4 rounded shrink-0 cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="Hillside mansion pool" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0gc2iEEa4rkl9wR4dA5hHKdUcROEV3wEM-ZlYGMVAY-9I4WrCmOx5Op4LRlUB3xDDlWNz7e7wbYFUG7PJBs-_BiKV3b6sW__lfEBkhWa7fA6pRMB9kkWj0gCg8YGSEAVBWvJl8QxgR32zh6swVEz95itlvZrCIZXbzu8kL_8Yb7fsfX4ASvL_VpqsoS7g71erGxBqSo_GEStPWpN6EkNhUmHjcxrp03afPVVsNs8D">
+</div>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-headline font-semibold text-xs text-white truncate hover:text-[#FDE68A] cursor-pointer">Villa Panorámica Las Casuarinas</span>
+<span class="text-[11px] text-text-muted truncate mt-0.5">950 m² · 5 Suites · Piscina Infinita</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-[11px] text-white">PD-SUR-009</span>
+<span class="text-[11px] text-text-muted truncate">Villa Unifamiliar</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<div class="mb-0.5">
+<span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-headline font-semibold tracking-wider bg-surface-container-high text-[#FDE68A] border border-border-subtle">VENTA</span>
+</div>
+<span class="font-headline font-semibold text-xs text-white">S/ 15,200,000</span>
+<span class="text-[10px] text-text-muted">~$4,100,000 USD</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">location_on</span>
+<span class="truncate">Surco</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center font-headline text-[10px] font-bold text-on-surface shrink-0">EB</div>
+<span class="truncate">Elena Benavides</span>
+</div>
+</td>
+<td class="py-3 px-2 text-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-headline font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Disponible
+                </span>
+</td>
+<td class="py-3 pr-4 pl-2 text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="font-headline text-[11px] font-medium text-text-muted hover:text-white px-1.5 py-1 transition-colors" type="button">Editar</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 4 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3 min-w-0">
+<input class="w-4 h-4 rounded shrink-0 cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="Classic European villa" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOz-B-I5mMKD_vIw1XBIhiUgGfPT36IFK1yQ3pIfX-0k9xp8N26f0L-9wVW9R1ZCeIQb95zH2_lZBV2ii64WozHFZ47PN8Ihwtvy_0hggKQZi0LtRSow_EnDUSUxma2BCUKhvAcUjIsYRhnS0WdI0STeY2m-BkHrpiqyc3US6_J1f6QF47e0T90DsTsuc6NeKKcwHV9S-GWlKJjcEmvuV2GDd9sKc2Z_yWXUs_ZC3O">
+</div>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-headline font-semibold text-xs text-white truncate hover:text-[#FDE68A] cursor-pointer">Residencia Los Conquistadores</span>
+<span class="text-[11px] text-text-muted truncate mt-0.5">540 m² · 4 Dorms · Jardín Privado</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-[11px] text-white">PD-ISID-089</span>
+<span class="text-[11px] text-text-muted truncate">Casa Tradicional</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<div class="mb-0.5">
+<span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-headline font-semibold tracking-wider bg-slate-800 text-sky-300 border border-sky-400/20">ALQUILER</span>
+</div>
+<span class="font-headline font-semibold text-xs text-white">S/ 22,000 <span class="text-[10px] font-normal text-text-muted">/ mes</span></span>
+<span class="text-[10px] text-text-muted">~$5,900 USD/mes</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">location_on</span>
+<span class="truncate">San Isidro</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center font-headline text-[10px] font-bold text-on-surface shrink-0">ML</div>
+<span class="truncate">Mateo Larrea</span>
+</div>
+</td>
+<td class="py-3 px-2 text-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-headline font-semibold bg-surface-container-high text-slate-300 border border-border-subtle">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>En Negociación
+                </span>
+</td>
+<td class="py-3 pr-4 pl-2 text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="font-headline text-[11px] font-medium text-text-muted hover:text-white px-1.5 py-1 transition-colors" type="button">Editar</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 5 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3 min-w-0">
+<input class="w-4 h-4 rounded shrink-0 cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="Contemporary luxury estate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWR9Jz-oPDAwEoWiKAPgQh5VPFHr2KRoAG5JWRPnTQCbaDAEIAXrh6UfMuCakXZ6CG5vnpaNBZfZYTnf-xhbioOFLUuF4t0m8PpXbnlslyeeygzbfy4pMwhAGZ0Z5G-D4NFOmWHMAjB2jeqlZtpgaNKLXIbBN9yb3NKPbho076SxarG2tQ0cIisznxaWBH4X7FA_Kd3lUCanQuZ4ynLemaCRMiIhhCpBEuyfDwMqHy">
+</div>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-headline font-semibold text-xs text-white truncate hover:text-[#FDE68A] cursor-pointer">Mansión Rinconada del Lago</span>
+<span class="text-[11px] text-text-muted truncate mt-0.5">1,120 m² · 6 Suites · Spa Privado</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-[11px] text-white">PD-MOL-015</span>
+<span class="text-[11px] text-text-muted truncate">Mansión / Finca</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<div class="mb-0.5">
+<span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-headline font-semibold tracking-wider bg-surface-container-high text-[#FDE68A] border border-border-subtle">VENTA</span>
+</div>
+<span class="font-headline font-semibold text-xs text-white">S/ 16,800,000</span>
+<span class="text-[10px] text-text-muted">~$4,540,000 USD</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">location_on</span>
+<span class="truncate">La Molina</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center font-headline text-[10px] font-bold text-on-surface shrink-0">VR</div>
+<span class="truncate">Valeria Rossi</span>
+</div>
+</td>
+<td class="py-3 px-2 text-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-headline font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Disponible
+                </span>
+</td>
+<td class="py-3 pr-4 pl-2 text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="font-headline text-[11px] font-medium text-text-muted hover:text-white px-1.5 py-1 transition-colors" type="button">Editar</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 6 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3 min-w-0">
+<input class="w-4 h-4 rounded shrink-0 cursor-pointer accent-[#FDE68A] bg-surface-container-high border-border-subtle" type="checkbox">
+<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="Modern glass flat" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA65t1FPeYso1P-WFQglaHX1PAGnf2tHMGFaLox09Svkoe-gDppusKB-xHlFcddBBclaxA2aANHn89jpR9xlW5iLaaeg1Bor0rwEK7XOG3Zi8sFfe5ejwyinvE8up-OoRffK6jOUprZ0jLcKgiq3-6T9NdrqxbxjRTshtdrVLSk4KXmQ1Gz7MVTziGClnHE81usL3LUD9PYik68mVEldM77bOLhF4sx1NyMiGEzUgq9">
+</div>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-headline font-semibold text-xs text-white truncate hover:text-[#FDE68A] cursor-pointer">Flat Exclusivo Malecón de la Marina</span>
+<span class="text-[11px] text-text-muted truncate mt-0.5">340 m² · 3 Suites · Vista al Océano</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-[11px] text-white">PD-MIRA-084</span>
+<span class="text-[11px] text-text-muted truncate">Departamento Flat</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex flex-col">
+<div class="mb-0.5">
+<span class="inline-block px-1.5 py-0.2 rounded text-[9px] font-headline font-semibold tracking-wider bg-slate-800 text-sky-300 border border-sky-400/20">ALQUILER</span>
+</div>
+<span class="font-headline font-semibold text-xs text-white">S/ 12,800 <span class="text-[10px] font-normal text-text-muted">/ mes</span></span>
+<span class="text-[10px] text-text-muted">~$3,450 USD/mes</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-text-muted shrink-0">location_on</span>
+<span class="truncate">Miraflores</span>
+</div>
+</td>
+<td class="py-3 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-border-subtle flex items-center justify-center font-headline text-[10px] font-bold text-on-surface shrink-0">CM</div>
+<span class="truncate">Carlos Morales</span>
+</div>
+</td>
+<td class="py-3 px-2 text-center">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-headline font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Disponible
+                </span>
+</td>
+<td class="py-3 pr-4 pl-2 text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="font-headline text-[11px] font-medium text-text-muted hover:text-white px-1.5 py-1 transition-colors" type="button">Editar</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Barra de paginación inferior -->
+<footer class="py-3 px-5 bg-surface-container-lowest border-t border-border-subtle flex flex-col sm:flex-row items-center gap-3 justify-end">
+<div class="flex items-center gap-1.5">
+  <button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted opacity-40 cursor-not-allowed" disabled="" type="button">
+    <span class="material-symbols-outlined text-[17px]">chevron_left</span>
+  </button>
+  <button class="w-7 h-7 rounded-lg flex items-center justify-center font-headline text-xs font-semibold bg-[#FDE68A] text-[#121318]" type="button">
+    1
+  </button>
+  <button class="w-7 h-7 rounded-lg flex items-center justify-center font-headline text-xs font-medium text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+    2
+  </button>
+  <button class="w-7 h-7 rounded-lg flex items-center justify-center font-headline text-xs font-medium text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+    3
+  </button>
+  <button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-container-high transition-colors" type="button">
+    <span class="material-symbols-outlined text-[17px]">chevron_right</span>
+  </button>
+</div></footer>
+</div>
+</main>
+
+
+</body></html>

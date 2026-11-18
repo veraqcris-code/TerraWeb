@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${agenteId == null ? 'Nuevo agente' : 'Editar agente'} + ' | P&amp;D Real Estate'">
+        Agente | P&amp;D Real Estate
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        background: "#0d0e13",
+                        "surface-container-low": "#13141a",
+                        "surface-container": "#191b22",
+                        "surface-container-high": "#232630",
+                        "on-surface": "#f1f3f9",
+                        "on-surface-variant": "#9ca3af",
+                        "accent-gold": "#FDE68A",
+                        error: "#ffb4ab"
+                    },
+                    fontFamily: { headline: ["Sora", "sans-serif"], body: ["Inter", "sans-serif"] }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { margin: 0; min-height: 100vh; background: #0d0e13; }
+        input:focus-visible, select:focus-visible, a:focus-visible, button:focus-visible {
+            outline: 2px solid #fde68a;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-background font-body text-on-surface antialiased">
+    <main class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-8">
+        <a class="mb-6 inline-flex items-center gap-2 text-sm text-on-surface-variant hover:text-accent-gold"
+            th:href="@{/admin#agentes}">
+            <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
+            Volver al resumen
+        </a>
+
+        <section class="overflow-hidden rounded-2xl border border-white/10 bg-surface-container-low shadow-2xl"
+            aria-labelledby="agent-form-title">
+            <header class="border-b border-white/10 px-6 py-6 sm:px-9">
+                <p class="mb-2 text-xs font-semibold text-accent-gold">Equipo comercial</p>
+                <h1 class="font-headline text-2xl font-semibold sm:text-3xl" id="agent-form-title"
+                    th:text="${agenteId == null ? 'Registrar agente' : 'Editar agente'}">Registrar agente</h1>
+                <p class="mt-2 text-sm text-on-surface-variant">Registra sus datos y define qué propiedades podrá gestionar.</p>
+            </header>
+
+            <form class="space-y-7 px-6 py-7 sm:px-9" method="post" enctype="multipart/form-data"
+                th:action="@{${formAction}}" th:object="${agenteForm}">
+                <div class="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error"
+                    role="alert" th:if="${#fields.hasGlobalErrors()}">
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}">Error del formulario</p>
+                </div>
+
+                <section class="grid gap-5 sm:grid-cols-2" aria-label="Datos del agente">
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="nombre">Nombre completo</label>
+                        <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="nombre" type="text" required maxlength="120" th:field="*{nombre}">
+                        <p class="mt-1 text-sm text-error" th:errors="*{nombre}"></p>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="correo">Correo electrónico</label>
+                        <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="correo" type="email" required maxlength="180" th:field="*{correo}">
+                        <p class="mt-1 text-sm text-error" th:errors="*{correo}"></p>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="cargo">Cargo</label>
+                        <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="cargo" th:field="*{cargo}">
+                            <option value="Director Asociado">Director asociado</option>
+                            <option value="Asesor Comercial Senior">Asesor comercial senior</option>
+                            <option value="Especialista Fiduciario">Especialista fiduciario</option>
+                            <option value="Asesor Junior">Asesor junior</option>
+                        </select>
+                        <p class="mt-1 text-sm text-error" th:errors="*{cargo}"></p>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="especialidad">Especialidad</label>
+                        <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="especialidad" th:field="*{especialidad}">
+                            <option value="Casas exclusivas y residencias">Casas exclusivas y residencias</option>
+                            <option value="Departamentos y penthouses">Departamentos y penthouses</option>
+                            <option value="Alquileres corporativos">Alquileres corporativos</option>
+                            <option value="Inversiones y terrenos">Inversiones y terrenos</option>
+                        </select>
+                        <p class="mt-1 text-sm text-error" th:errors="*{especialidad}"></p>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="telefono">Teléfono directo</label>
+                        <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="telefono" type="tel" required maxlength="25" th:field="*{telefono}">
+                        <p class="mt-1 text-sm text-error" th:errors="*{telefono}"></p>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium" for="whatsapp">WhatsApp comercial</label>
+                        <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
+                            id="whatsapp" type="tel" maxlength="25" th:field="*{whatsapp}">
+                        <p class="mt-1 text-sm text-error" th:errors="*{whatsapp}"></p>
+                    </div>
+                </section>
+
+                <section class="space-y-4" aria-labelledby="agent-status-title">
+                    <h2 class="font-headline text-lg font-semibold text-accent-gold" id="agent-status-title">
+                        Disponibilidad
+                    </h2>
+                    <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3 sm:max-w-sm"
+                        id="estado" th:field="*{estado}">
+                        <option value="DISPONIBLE">Disponible</option>
+                        <option value="INDUCCION">En inducción</option>
+                        <option value="PAUSA">En pausa</option>
+                    </select>
+                    <p class="text-sm text-error" th:errors="*{estado}"></p>
+                    <label class="flex items-center gap-3 text-sm">
+                        <input class="h-4 w-4 accent-accent-gold" type="checkbox" th:field="*{activo}">
+                        Agente activo y disponible para asignaciones
+                    </label>
+                </section>
+
+                <section class="space-y-3" aria-labelledby="agent-photo-title">
+                    <h2 class="font-headline text-lg font-semibold text-accent-gold" id="agent-photo-title">
+                        Foto de perfil
+                    </h2>
+                    <p class="text-sm text-on-surface-variant">Selecciona una imagen JPG, PNG o WEBP de hasta 15 MB.</p>
+                    <input class="block w-full text-sm text-on-surface-variant file:mr-4 file:rounded-full file:border-0 file:bg-accent-gold file:px-5 file:py-2.5 file:font-semibold file:text-background"
+                        id="foto" type="file" name="foto" accept="image/jpeg,image/png,image/webp">
+                    <div th:if="${agenteForm.fotoUrl != null and !#strings.isEmpty(agenteForm.fotoUrl)}">
+                        <img class="h-28 w-28 rounded-full border border-white/10 object-cover"
+                            th:src="${agenteForm.fotoUrl}" th:alt="|Foto de ${agenteForm.nombre}|">
+                        <input type="hidden" th:field="*{fotoUrl}">
+                    </div>
+                </section>
+
+                <footer class="flex flex-col-reverse gap-3 border-t border-white/10 pt-6 sm:flex-row sm:justify-end">
+                    <a class="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold hover:bg-white/5"
+                        th:href="@{/admin#agentes}">Cancelar</a>
+                    <button class="inline-flex items-center justify-center gap-2 rounded-full bg-accent-gold px-7 py-3 text-sm font-bold text-background hover:brightness-105"
+                        type="submit">
+                        <span class="material-symbols-outlined text-lg" aria-hidden="true">save</span>
+                        Guardar agente
+                    </button>
+                </footer>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

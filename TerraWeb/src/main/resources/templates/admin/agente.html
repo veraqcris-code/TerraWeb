@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <title>Agentes | P&amp;D Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Sora:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#090A0F","surface-container-lowest":"#0D0E14","surface-container-low":"#13141C","surface-container":"#181A24","surface-container-high":"#1E202E","on-surface":"#f1f3f9","on-surface-variant":"#9ca3af","text-muted":"#717a8c","accent-gold":"#FDE68A"},fontFamily:{headline:["Sora","sans-serif"],body:["Inter","sans-serif"]}}}};</script>
+    <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/admin-panel.js}" defer></script>
+</head>
+<body class="min-h-screen bg-background font-body text-on-surface antialiased">
+    <aside id="adminSidebar" class="admin-sidebar fixed inset-y-0 left-0 z-40 flex flex-col justify-between px-4 py-6" aria-label="Navegación administrativa">
+        <div>
+            <a class="mb-9 flex items-center gap-3 px-2 text-on-surface no-underline" th:href="@{/admin}"><span class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-surface-container-high font-headline text-sm font-bold text-accent-gold" aria-hidden="true">PD</span><span class="flex flex-col"><span class="font-headline text-xs font-bold tracking-wide">P&amp;D REAL ESTATE</span><span class="mt-1 text-[10px] text-text-muted">Administración</span></span></a>
+            <nav class="flex flex-col gap-1" aria-label="Secciones del panel">
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin}"><span class="material-symbols-outlined text-lg" aria-hidden="true">dashboard</span>Resumen</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/propiedades}"><span class="material-symbols-outlined text-lg" aria-hidden="true">apartment</span>Propiedades</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/solicitudes}"><span class="material-symbols-outlined text-lg" aria-hidden="true">mark_email_unread</span>Solicitudes</a>
+                <a class="sidebar-link active flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/agentes}" aria-current="page"><span class="material-symbols-outlined text-lg" aria-hidden="true">badge</span>Agentes</a>
+                <a class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/configuracion}"><span class="material-symbols-outlined text-lg" aria-hidden="true">settings</span>Configuración</a>
+            </nav>
+        </div>
+        <div class="flex items-center justify-between gap-2 border-t border-white/10 pt-4"><span class="truncate text-xs font-semibold">admin@terraweb</span><form method="post" th:action="@{/logout}"><button class="rounded-full border border-white/10 px-3 py-2 text-xs text-on-surface-variant hover:bg-surface-container-high" type="submit">Salir</button></form></div>
+    </aside>
+    <button class="admin-sidebar-backdrop" id="adminSidebarBackdrop" type="button" aria-label="Cerrar menú de navegación" hidden></button>
+    <main class="min-h-screen min-w-0 ml-[240px] px-4 py-7 sm:px-7 lg:px-10">
+        <button class="admin-mobile-toggle" id="adminMenuToggle" type="button" aria-controls="adminSidebar" aria-expanded="false" aria-label="Abrir menú de navegación"><span class="material-symbols-outlined" aria-hidden="true">menu</span></button>
+        <div class="mb-5 rounded-lg border border-accent-gold/25 bg-accent-gold/10 px-4 py-3 text-sm text-accent-gold"
+            role="status" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <header class="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
+            <div><p class="mb-2 text-sm text-accent-gold">Equipo comercial</p><h1 class="font-headline text-3xl font-semibold">Agentes</h1><p class="mt-2 text-sm text-on-surface-variant">Directorio conectado a los asesores registrados.</p></div>
+            <div class="flex flex-wrap gap-2">
+                <button class="button-secondary rounded-full px-4 py-3 text-sm" id="downloadAgents" type="button"><span class="material-symbols-outlined mr-1 align-middle text-base" aria-hidden="true">download</span>Descargar Reporte</button>
+                <button class="button-primary rounded-full px-5 py-3 text-sm font-semibold" id="openAgentModal" type="button">+ Nuevo Asesor</button>
+            </div>
+        </header>
+        <section class="admin-toolbar mb-5 space-y-4">
+            <div class="flex flex-wrap gap-2 border-b border-white/10 pb-3" role="tablist" aria-label="Filtrar agentes">
+                <button class="admin-tab agent-tab rounded-lg border px-3 py-2 text-sm" aria-pressed="true" data-filter="ALL" type="button">Todos <span data-agent-count="ALL">0</span></button>
+                <button class="admin-tab agent-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="SENIOR" type="button">Seniors <span data-agent-count="SENIOR">0</span></button>
+                <button class="admin-tab agent-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="SPECIALIST" type="button">Especialistas <span data-agent-count="SPECIALIST">0</span></button>
+                <button class="admin-tab agent-tab rounded-lg border border-transparent px-3 py-2 text-sm" aria-pressed="false" data-filter="INDUCTION" type="button">En Inducción <span data-agent-count="INDUCTION">0</span></button>
+            </div>
+            <div class="grid gap-3 lg:grid-cols-[minmax(240px,1fr)_repeat(2,minmax(180px,240px))_40px]">
+                <label class="sr-only" for="agentSearch">Buscar asesor</label>
+                <input class="admin-control rounded-lg px-3 py-2 text-sm" id="agentSearch" placeholder="Buscar por nombre, cargo o contacto">
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" id="agentSpecialty" aria-label="Especialidad"><option value="">Especialidad: Todas</option></select>
+                <select class="admin-control rounded-lg px-3 py-2 text-sm" id="agentAvailability" aria-label="Disponibilidad"><option value="">Disponibilidad: Cualquier estado</option><option value="DISPONIBLE">Disponible</option><option value="VISITA">En visita</option><option value="INACTIVO">Inactivo</option><option value="INDUCCION">En inducción</option><option value="PAUSA">En pausa</option></select>
+                <button class="icon-button" id="resetAgentFilters" type="button" aria-label="Reiniciar filtros" title="Reiniciar filtros">↺</button>
+            </div>
+        </section>
+        <p class="mb-4 text-sm text-red-300" id="agentError" role="alert"></p>
+        <section class="admin-table-shell overflow-hidden rounded-xl">
+            <div class="overflow-x-auto"><table class="admin-table w-full min-w-[950px] text-left">
+                <thead class="text-xs text-on-surface-variant"><tr><th class="w-12 px-4 py-4"><input id="selectAllAgents" type="checkbox" aria-label="Seleccionar todos los agentes"></th><th class="px-5 py-4 font-medium">Asesor</th><th class="px-5 py-4 font-medium">Cargo / Especialidad</th><th class="px-5 py-4 font-medium">Contacto</th><th class="px-5 py-4 font-medium">Propiedades</th><th class="px-5 py-4 font-medium">Estado</th><th class="px-5 py-4 text-right font-medium">Acciones</th></tr></thead>
+                <tbody class="text-sm" id="agentsBody"><tr><td class="px-5 py-10 text-center text-on-surface-variant" colspan="7">Cargando agentes…</td></tr></tbody>
+            </table></div>
+            <footer class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-sm">
+                <span class="text-on-surface-variant" id="agentPageSummary"></span>
+                <nav class="flex items-center gap-1" id="agentPagination" aria-label="Paginación de agentes"></nav>
+            </footer>
+        </section>
+    </main>
+    <div th:replace="~{admin/fragments/agente-modal :: agentModal}"></div>
+    <script th:inline="none">
+        const agentsBody = document.getElementById("agentsBody");
+        const agentError = document.getElementById("agentError");
+        const agentPageSize = 10;
+        let allAgents = [];
+        let agentFilter = "ALL";
+        let agentPage = 1;
+        const agentCell = value => {
+            const cell = document.createElement("td");
+            cell.className = "px-5 py-4";
+            cell.textContent = value || "—";
+            return cell;
+        };
+        const hasText = (value, query) => (value || "").toLocaleLowerCase().includes(query);
+        const getAgentStatus = agent => {
+            if (!agent.activo) return "INACTIVO";
+            const state = (agent.estado || "").toUpperCase().replaceAll(" ", "_");
+            if (state.includes("VISITA")) return "VISITA";
+            return ["INDUCCION", "PAUSA", "DISPONIBLE"].includes(state) ? state : "INACTIVO";
+        };
+        const statusLabel = status => ({
+            DISPONIBLE: "Disponible", VISITA: "En visita", INACTIVO: "Inactivo",
+            INDUCCION: "En inducción", PAUSA: "En pausa"
+        })[status] || "Inactivo";
+        const statusClass = status => status === "DISPONIBLE" ? "badge-available"
+            : status === "VISITA" ? "badge-progress"
+            : status === "INDUCCION" ? "badge-reserved" : "badge-inactive";
+
+        function escapeCsv(value) {
+            return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
+        }
+
+        function downloadAgentsReport(rows) {
+            const data = [["Nombre", "Cargo", "Especialidad", "Correo", "Teléfono", "Propiedades asignadas", "Estado"]];
+            rows.forEach(agent => data.push([
+                agent.nombre, agent.cargo, agent.especialidad, agent.correo, agent.telefono,
+                agent.propiedadesAsignadas, statusLabel(getAgentStatus(agent))
+            ]));
+            const url = URL.createObjectURL(new Blob(["\uFEFF" + data.map(row => row.map(escapeCsv).join(",")).join("\r\n")], {type: "text/csv;charset=utf-8"}));
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "agentes.csv";
+            link.click();
+            window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function filteredAgents() {
+            const query = document.getElementById("agentSearch").value.trim().toLocaleLowerCase();
+            const specialty = document.getElementById("agentSpecialty").value;
+            const availability = document.getElementById("agentAvailability").value;
+            return allAgents.filter(agent => {
+                const searchText = [agent.nombre, agent.cargo, agent.especialidad, agent.correo, agent.telefono].join(" ").toLocaleLowerCase();
+                const status = getAgentStatus(agent);
+                const matchesTab = agentFilter === "SENIOR" ? hasText(agent.cargo, "senior")
+                    : agentFilter === "SPECIALIST" ? Boolean(agent.especialidad && agent.especialidad.trim())
+                    : agentFilter === "INDUCTION" ? status === "INDUCCION" || hasText(agent.cargo, "inducción") : true;
+                return matchesTab && searchText.includes(query)
+                    && (!specialty || agent.especialidad === specialty)
+                    && (!availability || status === availability);
+            });
+        }
+
+        function renderAgentPagination(total) {
+            const pagination = document.getElementById("agentPagination");
+            pagination.replaceChildren();
+            const pages = Math.max(1, Math.ceil(total / agentPageSize));
+            const addButton = (label, page, disabled, current) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "pagination-link";
+                button.textContent = label;
+                button.setAttribute("aria-label", label === "<" ? "Página anterior" : label === ">" ? "Página siguiente" : "Página " + label);
+                button.setAttribute("aria-disabled", String(disabled));
+                if (current) button.setAttribute("aria-current", "page");
+                button.addEventListener("click", () => {
+                    if (disabled) return;
+                    agentPage = page;
+                    renderAgents();
+                });
+                pagination.append(button);
+            };
+            addButton("<", agentPage - 1, agentPage <= 1, false);
+            for (let page = 1; page <= pages; page++) addButton(String(page), page, false, page === agentPage);
+            addButton(">", agentPage + 1, agentPage >= pages, false);
+            document.getElementById("agentPageSummary").textContent = total
+                ? "Mostrando " + ((agentPage - 1) * agentPageSize + 1) + "–" + Math.min(agentPage * agentPageSize, total) + " de " + total
+                : "Sin agentes";
+        }
+
+        function renderAgents() {
+            const counts = {
+                ALL: allAgents.length,
+                SENIOR: allAgents.filter(agent => hasText(agent.cargo, "senior")).length,
+                SPECIALIST: allAgents.filter(agent => Boolean(agent.especialidad && agent.especialidad.trim())).length,
+                INDUCTION: allAgents.filter(agent => getAgentStatus(agent) === "INDUCCION" || hasText(agent.cargo, "inducción")).length
+            };
+            Object.entries(counts).forEach(([key, value]) => {
+                document.querySelectorAll("[data-agent-count]").forEach(counter => {
+                    if (counter.dataset.agentCount === key) counter.textContent = value;
+                });
+            });
+            const filtered = filteredAgents();
+            const pages = Math.max(1, Math.ceil(filtered.length / agentPageSize));
+            agentPage = Math.min(agentPage, pages);
+            renderAgentPagination(filtered.length);
+            agentsBody.replaceChildren();
+            document.getElementById("selectAllAgents").checked = false;
+            if (!filtered.length) {
+                const row = document.createElement("tr");
+                const empty = agentCell("No hay agentes que coincidan con estos filtros.");
+                empty.colSpan = 7;
+                empty.className += " text-center text-on-surface-variant";
+                row.append(empty);
+                agentsBody.append(row);
+                return;
+            }
+            filtered.slice((agentPage - 1) * agentPageSize, agentPage * agentPageSize).forEach(agent => {
+                const row = document.createElement("tr");
+                const selection = document.createElement("td");
+                selection.className = "px-4 py-4";
+                const checkbox = document.createElement("input");
+                checkbox.className = "agent-checkbox";
+                checkbox.type = "checkbox";
+                checkbox.value = agent.id;
+                checkbox.setAttribute("aria-label", "Seleccionar agente " + agent.nombre);
+                selection.append(checkbox);
+                const person = document.createElement("td");
+                person.className = "px-5 py-4";
+                const profile = document.createElement("div");
+                profile.className = "flex items-center gap-3";
+                const avatar = document.createElement("span");
+                avatar.className = "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-accent-gold";
+                avatar.textContent = (agent.nombre || "?").trim().charAt(0).toUpperCase();
+                if (agent.fotoUrl) {
+                    const image = document.createElement("img");
+                    image.src = agent.fotoUrl;
+                    image.alt = "Foto de " + agent.nombre;
+                    image.className = "h-10 w-10 shrink-0 rounded-full object-cover";
+                    image.addEventListener("error", () => image.replaceWith(avatar), {once: true});
+                    profile.append(image);
+                } else {
+                    profile.append(avatar);
+                }
+                const name = document.createElement("span");
+                name.textContent = agent.nombre || "Sin nombre";
+                profile.append(name);
+                person.append(profile);
+                const contact = agentCell(agent.correo);
+                if (agent.telefono) {
+                    const phone = document.createElement("a");
+                    phone.className = "mt-1 block text-xs text-on-surface-variant hover:text-accent-gold";
+                    phone.href = "tel:" + agent.telefono;
+                    phone.textContent = agent.telefono;
+                    contact.append(phone);
+                }
+                const status = getAgentStatus(agent);
+                const statusCell = document.createElement("td");
+                statusCell.className = "px-5 py-4";
+                const badge = document.createElement("span");
+                badge.className = "badge " + statusClass(status);
+                badge.textContent = statusLabel(status);
+                statusCell.append(badge);
+                row.append(selection, person,
+                    agentCell([agent.cargo, agent.especialidad].filter(Boolean).join(" · ")),
+                    contact, agentCell(String(agent.propiedadesAsignadas || 0)), statusCell);
+                const actions = document.createElement("td");
+                actions.className = "px-5 py-4 text-right";
+                const actionList = document.createElement("div");
+                actionList.className = "inline-flex items-center gap-2";
+                const edit = document.createElement("a");
+                edit.className = "icon-button";
+                edit.href = "/admin/agentes/" + agent.id + "/editar";
+                edit.setAttribute("aria-label", "Editar " + agent.nombre);
+                edit.title = "Editar";
+                edit.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">edit</span>';
+                const form = document.createElement("form");
+                form.method = "post";
+                form.action = "/admin/agentes/" + agent.id + "/eliminar";
+                const csrf = document.createElement("input");
+                csrf.type = "hidden";
+                csrf.name = "_csrf";
+                csrf.value = document.querySelector('meta[name="_csrf"]').content;
+                form.append(csrf);
+                const remove = document.createElement("button");
+                remove.className = "icon-button";
+                remove.type = "submit";
+                remove.setAttribute("aria-label", "Eliminar " + agent.nombre);
+                remove.title = "Eliminar";
+                remove.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">delete</span>';
+                form.append(remove);
+                actionList.append(edit, form);
+                actions.append(actionList);
+                row.append(actions);
+                agentsBody.append(row);
+            });
+        }
+
+        document.querySelectorAll(".agent-tab").forEach(tab => tab.addEventListener("click", () => {
+            agentFilter = tab.dataset.filter;
+            agentPage = 1;
+            document.querySelectorAll(".agent-tab").forEach(item => item.setAttribute("aria-pressed", String(item === tab)));
+            renderAgents();
+        }));
+        ["agentSearch", "agentSpecialty", "agentAvailability"].forEach(id => {
+            document.getElementById(id).addEventListener(id === "agentSearch" ? "input" : "change", () => {
+                agentPage = 1;
+                renderAgents();
+            });
+        });
+        document.getElementById("resetAgentFilters").addEventListener("click", () => {
+            document.getElementById("agentSearch").value = "";
+            document.getElementById("agentSpecialty").value = "";
+            document.getElementById("agentAvailability").value = "";
+            agentFilter = "ALL";
+            agentPage = 1;
+            document.querySelectorAll(".agent-tab").forEach(tab => tab.setAttribute("aria-pressed", String(tab.dataset.filter === "ALL")));
+            renderAgents();
+        });
+        document.getElementById("selectAllAgents").addEventListener("change", event => {
+            document.querySelectorAll(".agent-checkbox").forEach(checkbox => checkbox.checked = event.target.checked);
+        });
+        agentsBody.addEventListener("change", event => {
+            if (!event.target.classList.contains("agent-checkbox")) return;
+            const checkboxes = [...document.querySelectorAll(".agent-checkbox")];
+            document.getElementById("selectAllAgents").checked = checkboxes.length > 0 && checkboxes.every(checkbox => checkbox.checked);
+        });
+        document.getElementById("downloadAgents").addEventListener("click", () => downloadAgentsReport(filteredAgents()));
+        document.getElementById("openAgentModal").addEventListener("click", () => document.getElementById("agentModal").showModal());
+        document.getElementById("closeAgentModal").addEventListener("click", () => document.getElementById("agentModal").close());
+        fetch("/api/v1/admin/agentes", {headers: {"Accept": "application/json"}})
+            .then(response => {
+                if (!response.ok) throw new Error("No se pudieron cargar los agentes.");
+                return response.json();
+            })
+            .then(agents => {
+                if (!Array.isArray(agents)) throw new Error("El servidor devolvió un listado de agentes no válido.");
+                allAgents = agents;
+                const specialties = [...new Set(allAgents.map(agent => agent.especialidad).filter(Boolean))].sort();
+                const specialtySelect = document.getElementById("agentSpecialty");
+                specialties.forEach(specialty => {
+                    const option = document.createElement("option");
+                    option.value = specialty;
+                    option.textContent = specialty;
+                    specialtySelect.append(option);
+                });
+                renderAgents();
+            })
+            .catch(error => {
+                agentError.textContent = error.message;
+                const row = document.createElement("tr");
+                const message = agentCell("No se pudieron cargar los agentes. Actualiza la página o vuelve a intentarlo.");
+                message.colSpan = 7;
+                message.className += " text-center text-red-300";
+                row.append(message);
+                agentsBody.replaceChildren(row);
+            });
+    </script>
+</body>
+</html>

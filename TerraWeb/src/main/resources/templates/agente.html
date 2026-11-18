@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asesores | P&amp;D Real Estate Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --page: #090A0F;
+      --surface: #13141C;
+      --surface-raised: #181A24;
+      --gold: #FDE68A;
+      --text: #F3F4F6;
+      --muted: #A0A5B2;
+      --line: rgba(255,255,255,.1);
+    }
+    html { overflow-y: scroll; }
+    html, body { min-height: 100%; background: var(--page); color: var(--text); }
+    body { font-family: "Plus Jakarta Sans", sans-serif; }
+    .font-sora { font-family: Sora, sans-serif; }
+    .site-header {
+      background: rgba(9,10,15,.95);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+    .site-header .nav-pill {
+      gap: 2rem;
+      padding: .6rem 1.5rem;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 999px;
+      background: #13141C;
+    }
+    .site-header .nav-link {
+      padding: .35rem 0;
+      color: #E3E1E9;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .site-header .nav-link:hover, .site-header .nav-link.active { color: var(--gold); }
+    .site-header .nav-link:focus-visible, .agents-page a:focus-visible,
+    .agents-page button:focus-visible, .agents-page input:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+    .agents-page { padding-top: 5rem; }
+    .agents-hero {
+      padding: 5.2rem 0 2.5rem;
+      background: linear-gradient(180deg, #090A0F 0%, #0E1017 100%);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--gold);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      width: .42rem;
+      height: .42rem;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+    .agents-title {
+      margin: 0 0 .8rem;
+      color: #fff;
+      font: 600 clamp(1.875rem, 3.2vw, 2.25rem)/1.2 Sora, sans-serif;
+      letter-spacing: -.035em;
+    }
+    .agents-intro { max-width: 48rem; margin: 0; color: var(--muted); line-height: 1.75; }
+    .directory-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2.2rem;
+      padding: .8rem;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+    }
+    .agent-search {
+      display: flex;
+      min-width: 16rem;
+      flex: 1 1 20rem;
+      align-items: center;
+      gap: .7rem;
+      padding: .75rem 1rem;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: .65rem;
+      background: #1A1C27;
+      color: var(--muted);
+    }
+    .agent-search svg { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; }
+    .agent-search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: .84rem;
+    }
+    .agent-search input::placeholder { color: #858B99; }
+    .specialty-tabs {
+      display: flex;
+      max-width: 100%;
+      align-items: center;
+      gap: .45rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #363947 transparent;
+    }
+    .specialty-tab {
+      flex: 0 0 auto;
+      padding: .7rem .95rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 700;
+      transition: background-color .15s ease, color .15s ease;
+    }
+    .specialty-tab:hover { color: white; }
+    .specialty-tab[aria-pressed="true"] {
+      border-color: rgba(253,230,138,.18);
+      background: #1E202E;
+      color: var(--gold);
+    }
+    .directory-summary { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1.7rem 0 1rem; }
+    .directory-summary p { margin: 0; color: var(--muted); font-size: .84rem; }
+    .directory-summary strong { color: white; }
+    .agent-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.25rem; }
+    .agent-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: .95rem;
+      background: var(--surface);
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .agent-card:hover { transform: translateY(-3px); border-color: rgba(253,230,138,.32); }
+    .agent-portrait { position: relative; height: 290px; overflow: hidden; background: #1A1C27; }
+    .agent-portrait > img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+    .agent-initials {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      background: radial-gradient(circle at 50% 40%, #242735, #141620 70%);
+      color: var(--gold);
+      font: 600 3rem Sora, sans-serif;
+      letter-spacing: .04em;
+    }
+    .availability {
+      position: absolute;
+      top: .9rem;
+      left: .9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .43rem .7rem;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 999px;
+      background: rgba(9,10,15,.86);
+      color: #E5E7EB;
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+    }
+    .availability::before { width: .45rem; height: .45rem; border-radius: 50%; background: #7B8190; content: ""; }
+    .availability.available { color: #A7F3D0; }
+    .availability.available::before { background: #10B981; }
+    .availability.visit { color: #FDE68A; }
+    .availability.visit::before { background: #FDE68A; }
+    .portrait-shade { position: absolute; inset: 40% 0 0; background: linear-gradient(180deg, transparent, rgba(9,10,15,.68)); pointer-events: none; }
+    .agent-portrait-zone { position: absolute; right: 1rem; bottom: .9rem; left: 1rem; color: white; font-size: .74rem; font-weight: 600; }
+    .agent-content { display: flex; min-height: 330px; flex-direction: column; padding: 1.25rem; }
+    .agent-role { margin: 0 0 .4rem; color: var(--gold); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .agent-name { margin: 0; color: white; font: 600 1.18rem/1.35 Sora, sans-serif; }
+    .agent-specialty { min-height: 2.5rem; margin: .45rem 0 0; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+    .agent-portfolio {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: 1.15rem;
+      padding: .9rem 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .agent-portfolio span:first-child { color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .07em; }
+    .agent-portfolio strong { color: white; font: 600 .9rem Sora, sans-serif; white-space: nowrap; }
+    .agent-actions { display: grid; grid-template-columns: 1fr; gap: .75rem; margin-top: auto; padding-top: 1.1rem; }
+    .contact-button {
+      display: flex;
+      min-height: 2.9rem;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      border: 0;
+      border-radius: .55rem;
+      background: var(--gold);
+      color: #090A0C;
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-decoration: none;
+    }
+    .contact-button:hover { background: #FEF0AE; color: #090A0C; }
+    .contact-button.disabled { background: #30323D; color: #A0A5B2; }
+    .properties-link { display: block; padding: .45rem; color: var(--muted); font-size: .69rem; font-weight: 800; letter-spacing: .06em; text-align: center; text-decoration: none; }
+    .properties-link:hover { color: var(--gold); }
+    .empty-state {
+      padding: 3rem 1.5rem;
+      border: 1px solid var(--line);
+      border-radius: .9rem;
+      background: var(--surface);
+      color: var(--muted);
+      text-align: center;
+    }
+    .empty-state h2 { color: white; font: 600 1.2rem Sora, sans-serif; }
+    .commitment-section { padding: 5rem 0; background: #0D0E15; }
+    .section-heading { max-width: 45rem; margin-bottom: 2rem; }
+    .section-heading h2 { margin: .65rem 0 .75rem; color: white; font: 600 clamp(1.7rem,3vw,2.25rem)/1.2 Sora,sans-serif; }
+    .section-heading p { margin: 0; color: var(--muted); line-height: 1.7; }
+    .commitment-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+    .commitment-card { min-height: 230px; padding: 1.5rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--surface); }
+    .commitment-icon { display: grid; width: 2.7rem; height: 2.7rem; place-items: center; margin-bottom: 1.6rem; border: 1px solid rgba(253,230,138,.18); border-radius: .75rem; background: #1A1C27; color: var(--gold); }
+    .commitment-icon svg { width: 1.3rem; height: 1.3rem; }
+    .commitment-card h3 { margin: 0 0 .65rem; color: white; font: 600 1rem Sora,sans-serif; }
+    .commitment-card p { margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.7; }
+    .owner-cta-section { padding: 4.5rem 0; background: var(--page); }
+    .owner-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 2.3rem;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+    }
+    .owner-cta h2 { max-width: 42rem; margin: .55rem 0 .65rem; color: white; font: 600 clamp(1.5rem,2.8vw,2rem)/1.25 Sora,sans-serif; }
+    .owner-cta p { max-width: 46rem; margin: 0; color: var(--muted); line-height: 1.7; }
+    .owner-cta .contact-button { min-width: 13rem; padding: .85rem 1rem; }
+    .site-footer { background: #07080C; }
+    .site-footer h4 { color: white; font: 600 1rem Sora,sans-serif; }
+    .site-footer .footer-link { color: rgba(255,255,255,.58); font-size: .8rem; text-decoration: none; }
+    .site-footer .footer-link:hover { color: var(--gold); }
+    .newsletter-box { display: flex; align-items: center; gap: .5rem; padding: .5rem .65rem; border: 1px solid var(--line); border-radius: .6rem; background: #141620; }
+    .newsletter-box input { width: 100%; border: 0; outline: 0; background: transparent; color: white; font: inherit; font-size: .78rem; }
+    .newsletter-box .send-btn { display: grid; width: 2rem; height: 2rem; flex: 0 0 auto; place-items: center; border: 0; border-radius: 50%; background: var(--gold); }
+    .social-link { color: rgba(255,255,255,.55); }
+    .social-link:hover { color: var(--gold); }
+    @media (max-width: 991.98px) {
+      .agent-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .directory-tools { align-items: stretch; flex-direction: column; }
+      .agent-search { min-width: 0; }
+    }
+    @media (max-width: 767.98px) {
+      .site-header .container { gap: .65rem; }
+      .site-header .nav-pill { gap: .7rem; padding: .4rem .8rem; }
+      .site-header .nav-link { font-size: .72rem; }
+      .agents-hero { padding-top: 3.5rem; }
+      .agent-grid, .commitment-grid { grid-template-columns: 1fr; }
+      .agent-portrait { height: 320px; }
+      .owner-cta { align-items: flex-start; flex-direction: column; padding: 1.5rem; }
+      .owner-cta .contact-button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header fixed-top">
+  <div class="container d-flex align-items-center justify-content-between" style="max-width: 1440px; height: 5rem;">
+    <a class="d-flex align-items-center gap-3 text-decoration-none" th:href="@{/inicio}">
+      <span class="d-flex align-items-center justify-content-center rounded font-sora fw-bold" style="width: 2.5rem; height: 2.5rem; border: 1px solid rgba(255,255,255,.1); background: #13141C; color: #FDE68A;">P&amp;D</span>
+      <span class="d-flex flex-column">
+        <span class="small fw-bold font-sora text-white text-uppercase" style="letter-spacing: .05em; line-height: 1.1;">P&amp;D REAL ESTATE GROUP</span>
+        <span class="text-uppercase mt-1" style="font-size: .625rem; font-weight: 600; letter-spacing: .2em; color: #A0A5B2;">DESIGN SYSTEM</span>
+      </span>
+    </a>
+    <nav class="d-none d-md-flex align-items-center nav-pill" aria-label="Navegación principal">
+      <a class="nav-link" th:href="@{/inicio}">Inicio</a>
+      <a class="nav-link" th:href="@{/busqueda}">Buscar</a>
+      <a class="nav-link active" aria-current="page" th:href="@{/agentes}">Agentes</a>
+      <a class="nav-link" th:href="@{/nosotros}">Quiénes somos</a>
+    </nav>
+    <a aria-label="Perfil de usuario" class="d-flex align-items-center justify-content-center rounded-circle text-decoration-none" th:href="@{/mi-cuenta}" onclick="sessionStorage.setItem('ultimaVistaPublica', window.location.href);" style="width: 2.25rem; height: 2.25rem; background: #FDE68A; color: #090A0F;">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </a>
+  </div>
+</header>
+
+<main class="agents-page">
+  <section class="agents-hero">
+    <div class="container" style="max-width: 1440px;">
+      <p class="eyebrow mb-3">Personas que conocen el mercado</p>
+      <h1 class="agents-title">Conoce a nuestro equipo de asesores</h1>
+      <p class="agents-intro">Profesionales listos para acompañarte en la compra, venta o alquiler de tu propiedad en Piura y todo el Perú.</p>
+
+      <div class="directory-tools">
+        <label class="agent-search" for="agent-search">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke-width="1.8"/><path d="m16 16 4 4" stroke-linecap="round" stroke-width="1.8"/></svg>
+          <input id="agent-search" type="search" placeholder="Buscar por nombre o zona" autocomplete="off">
+        </label>
+        <div class="specialty-tabs" role="group" aria-label="Filtrar por especialidad">
+          <button class="specialty-tab" type="button" data-specialty-filter="all" aria-pressed="true">Todos</button>
+          <button class="specialty-tab" type="button" th:each="categoria : ${categoriasEspecialidad}"
+                  th:attr="data-specialty-filter=${categoria.palabraClave}" th:text="${categoria.nombre}">Casas</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-5">
+    <div class="container" style="max-width: 1440px;">
+      <div class="directory-summary">
+        <p><strong id="agent-count" th:text="${#lists.size(agentes)}">0</strong> asesores disponibles para ayudarte</p>
+        <p id="filter-summary" aria-live="polite"></p>
+      </div>
+      <div id="agent-grid" class="agent-grid" th:if="${!#lists.isEmpty(agentes)}">
+        <article class="agent-card" th:each="agente : ${agentes}"
+                 th:attr="data-agent-name=${agente.nombre}, data-agent-zone=${agente.zona}, data-agent-specialty=${agente.especialidad}">
+          <div class="agent-portrait">
+            <img th:if="${agente.fotoUrl != null and !#strings.isEmpty(agente.fotoUrl)}"
+                 th:src="${#strings.startsWith(agente.fotoUrl, 'http') or #strings.startsWith(agente.fotoUrl, '/') ? agente.fotoUrl : '/images/' + agente.fotoUrl}"
+                 th:alt="|Fotografía de ${agente.nombre}|"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+            <div class="agent-initials" aria-hidden="true"
+                 th:style="${agente.fotoUrl != null and !#strings.isEmpty(agente.fotoUrl) ? 'display:none' : 'display:grid'}"
+                 th:text="${agente.iniciales}">AA</div>
+            <div class="portrait-shade"></div>
+            <span class="availability"
+                  th:classappend="${#strings.equalsIgnoreCase(agente.estado, 'DISPONIBLE') ? ' available' : (#strings.containsIgnoreCase(agente.estado, 'VISITA') ? ' visit' : '')}"
+                  th:text="${#strings.containsIgnoreCase(agente.estado, 'VISITA') ? 'EN VISITA' : (#strings.equalsIgnoreCase(agente.estado, 'DISPONIBLE') ? 'DISPONIBLE' : (#strings.equalsIgnoreCase(agente.estado, 'INDUCCION') ? 'EN INDUCCIÓN' : 'EN PAUSA'))}">DISPONIBLE</span>
+            <span class="agent-portrait-zone" th:text="${agente.zona}">Zona</span>
+          </div>
+          <div class="agent-content">
+            <div>
+              <p class="agent-role" th:text="${agente.cargo}">Asesor inmobiliario</p>
+              <h2 class="agent-name" th:text="${agente.nombre}">Nombre del asesor</h2>
+              <p class="agent-specialty" th:text="${agente.especialidad}">Especialidad</p>
+              <div class="agent-portfolio">
+                <span>DISPONIBLES</span>
+                <strong th:text="|${agente.propiedadesDisponibles} ${agente.propiedadesDisponibles == 1 ? 'Propiedad' : 'Propiedades'}|">0 Propiedades</strong>
+              </div>
+            </div>
+            <div class="agent-actions">
+              <a class="contact-button" th:if="${agente.whatsappUrl != null}" th:href="${agente.whatsappUrl}"
+                 target="_blank" rel="noopener noreferrer">CONTACTAR</a>
+              <span class="contact-button disabled" th:unless="${agente.whatsappUrl != null}" aria-disabled="true"
+                    title="Este asesor no tiene un teléfono de contacto configurado">CONTACTAR</span>
+              <a class="properties-link" th:href="@{/buscar(agenteId=${agente.id})}"
+                 th:text="|VER PROPIEDADES (${agente.propiedadesDisponibles}) →|">VER PROPIEDADES (0) →</a>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div id="agent-empty" class="empty-state" th:if="${#lists.isEmpty(agentes)}">
+        <h2>Estamos preparando el equipo para atenderte</h2>
+        <p class="mb-0">Por ahora no hay asesores activos publicados. Vuelve pronto para conocerlos.</p>
+      </div>
+      <div id="search-empty" class="empty-state mt-3" hidden>
+        <h2>No encontramos asesores con esos criterios</h2>
+        <p class="mb-0">Prueba con otro nombre, zona o especialidad.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="commitment-section">
+    <div class="container" style="max-width: 1440px;">
+      <div class="section-heading">
+        <p class="eyebrow mb-2">Nuestro compromiso</p>
+        <h2>Te acompañamos con claridad, de principio a fin</h2>
+        <p>Un buen resultado empieza por escuchar lo que necesitas y cuidar cada decisión del proceso.</p>
+      </div>
+      <div class="commitment-grid">
+        <article class="commitment-card">
+          <div class="commitment-icon" aria-hidden="true">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.75V19h8v-3.25A7 7 0 0 0 12 3Z" stroke-linejoin="round" stroke-width="1.6"/><path d="M9 22h6M9 16h6" stroke-linecap="round" stroke-width="1.6"/></svg>
+          </div>
+          <h3>Atención personalizada</h3>
+          <p>Escuchamos tus prioridades y te acompañamos con opciones y respuestas claras en cada etapa.</p>
+        </article>
+        <article class="commitment-card">
+          <div class="commitment-icon" aria-hidden="true">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-9M15 6h6v6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>
+          </div>
+          <h3>Valoración comercial justa</h3>
+          <p>Consideramos la ubicación, las características y el mercado para plantear un precio razonable.</p>
+        </article>
+        <article class="commitment-card">
+          <div class="commitment-icon" aria-hidden="true">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.4 3.1 7.8 7.5 9.5 4.4-1.7 7.5-5.1 7.5-9.5V6L12 3Z" stroke-linejoin="round" stroke-width="1.6"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/></svg>
+          </div>
+          <h3>Acompañamiento legal seguro</h3>
+          <p>Te ayudamos a revisar los pasos y documentos para avanzar con tranquilidad hasta el cierre.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="owner-cta-section">
+    <div class="container" style="max-width: 1440px;">
+      <div class="owner-cta">
+        <div>
+          <p class="eyebrow mb-2">¿Tienes una propiedad?</p>
+          <h2>¿Quieres vender o alquilar tu propiedad con nosotros?</h2>
+          <p>Nuestro equipo te ayuda a publicarla, encontrar a la persona adecuada y cerrar el trato con agilidad.</p>
+        </div>
+        <a class="contact-button" th:if="${contactoUrl != null}" th:href="${contactoUrl}"
+           target="_blank" rel="noopener noreferrer">HABLAR CON UN ASESOR <span aria-hidden="true">→</span></a>
+        <span class="contact-button disabled" th:unless="${contactoUrl != null}" aria-disabled="true"
+              title="Configura un WhatsApp o correo de contacto en administración">HABLAR CON UN ASESOR <span aria-hidden="true">→</span></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer pt-5 pb-4" style="padding-top: 5rem !important;">
+  <div class="container" style="max-width: 1440px;">
+    <div class="row g-5 pb-5 border-bottom border-white border-opacity-10">
+      <div class="col-lg-4">
+        <a class="d-inline-flex align-items-center gap-3 text-decoration-none mb-4" th:href="@{/inicio}">
+          <svg width="36" height="36" style="color: #FDE68A;" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M12 8H24C28.4183 8 32 11.5817 32 16C32 20.4183 28.4183 24 24 24H12V8Z" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+            <path d="M22 24H30C35.5228 24 40 28.4772 40 34C40 39.5228 35.5228 44 30 44H22V24Z" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+            <path d="M12 6V42" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+          </svg>
+          <span class="d-flex flex-column">
+            <span class="fw-semibold text-uppercase" style="font-size: .875rem; letter-spacing: .22em; color: #FDE68A; line-height: 1;">P&amp;D Real Estate</span>
+            <span class="text-uppercase mt-1" style="font-size: .5625rem; letter-spacing: .4em; color: rgba(255,255,255,.4);">Group</span>
+          </span>
+        </a>
+        <p class="mb-4" style="font-size: .75rem; line-height: 1.7; max-width: 24rem; color: #A0A5B2;">
+          Descubre propiedades residenciales y comerciales en Piura y otras ciudades del Perú con la asesoría integral de P&amp;D Real Estate.
+        </p>
+        <div class="newsletter-box">
+          <svg width="16" height="16" class="flex-shrink-0" style="color: rgba(255,255,255,.4);" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </svg>
+          <input type="email" placeholder="Ingrese su correo electrónico" aria-label="Correo electrónico">
+          <button class="send-btn" type="button" aria-label="Suscribirse">
+            <svg width="14" height="14" style="color: #090A0F; transform: rotate(-45deg);" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="row g-4">
+          <div class="col-6 col-sm">
+            <h4>Inicio</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/inicio}">Sección Hero</a></li>
+              <li><a class="footer-link" th:href="@{/inicio}">Características</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Propiedades</a></li>
+              <li><a class="footer-link" th:href="@{/inicio}">Testimonios</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Preguntas Frecuentes</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Sobre Nosotros</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/nosotros}">Nuestra Historia</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Nuestros Trabajos</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Cómo Funciona</a></li>
+              <li><a class="footer-link" th:href="@{/agentes}">Nuestro Equipo</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Clientes</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Propiedades</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/busqueda}">Portafolio</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Categorías</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Residencial</a></li>
+              <li><a class="footer-link" th:href="@{/busqueda}">Comercial</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Servicios</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/nosotros}">Tasación Experta</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Marketing Estratégico</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Negociación Inmobiliaria</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Cierre Exitoso</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Gestión de Propiedades</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-sm">
+            <h4>Contacto</h4>
+            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+              <li><a class="footer-link" th:href="@{/agentes}">Formulario de Contacto</a></li>
+              <li><a class="footer-link" th:href="@{/nosotros}">Nuestras Oficinas</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3" style="font-size: .75rem; color: rgba(255,255,255,.5);">
+      <p class="mb-0">
+        ©2024 P&amp;D Real Estate. Todos los derechos reservados.
+        <a class="footer-link text-decoration-underline" style="text-decoration-color: rgba(255,255,255,.2);" href="#">Términos y Condiciones</a> |
+        <a class="footer-link text-decoration-underline" style="text-decoration-color: rgba(255,255,255,.2);" href="#">Privacidad</a>
+      </p>
+      <div class="d-flex gap-3">
+        <a aria-label="Facebook" href="#" class="social-link">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+        </a>
+        <a aria-label="LinkedIn" href="#" class="social-link">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a aria-label="X (Twitter)" href="#" class="social-link">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a aria-label="YouTube" href="#" class="social-link">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+  (() => {
+    const search = document.getElementById("agent-search");
+    const cards = [...document.querySelectorAll(".agent-card")];
+    const tabs = [...document.querySelectorAll("[data-specialty-filter]")];
+    const count = document.getElementById("agent-count");
+    const summary = document.getElementById("filter-summary");
+    const empty = document.getElementById("search-empty");
+    let activeSpecialty = "all";
+
+    function normalize(value) {
+      return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    function updateDirectory() {
+      const query = normalize(search.value.trim());
+      let visible = 0;
+      cards.forEach(card => {
+        const name = normalize(card.dataset.agentName);
+        const zone = normalize(card.dataset.agentZone);
+        const specialty = normalize(card.dataset.agentSpecialty);
+        const matchesText = !query || name.includes(query) || zone.includes(query);
+        const matchesSpecialty = activeSpecialty === "all" || specialty.includes(activeSpecialty);
+        const show = matchesText && matchesSpecialty;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      count.textContent = String(visible);
+      summary.textContent = visible === cards.length ? "" : `Mostrando ${visible} de ${cards.length}`;
+      empty.hidden = visible !== 0 || cards.length === 0;
+    }
+
+    tabs.forEach(tab => tab.addEventListener("click", () => {
+      activeSpecialty = tab.dataset.specialtyFilter;
+      tabs.forEach(item => item.setAttribute("aria-pressed", String(item === tab)));
+      updateDirectory();
+    }));
+    search.addEventListener("input", updateDirectory);
+  })();
+</script>
+</body>
+</html>
