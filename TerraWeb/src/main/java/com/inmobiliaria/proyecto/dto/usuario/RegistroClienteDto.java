@@ -16,12 +16,13 @@ public class RegistroClienteDto {
     @Size(max = 180)
     private String correo;
     @NotBlank
-    @Pattern(regexp = "^[+0-9() .-]{7,25}$", message = "Ingrese un teléfono válido")
+    @Pattern(regexp = "^(?:\\+?51[ .-]?)?9(?:[ .-]?\\d){8}$", message = "Ingrese un celular válido de Perú")
     private String telefono;
     @NotBlank
     @Size(min = 12, max = 72)
     private String password;
     @NotBlank
+    @Size(min = 12, max = 72)
     private String confirmarPassword;
     @AssertTrue(message = "Debes aceptar los términos para crear una cuenta.")
     private boolean aceptaTerminos;
@@ -38,4 +39,9 @@ public class RegistroClienteDto {
     public void setConfirmarPassword(String confirmarPassword) { this.confirmarPassword = confirmarPassword; }
     public boolean isAceptaTerminos() { return aceptaTerminos; }
     public void setAceptaTerminos(boolean aceptaTerminos) { this.aceptaTerminos = aceptaTerminos; }
+
+    @AssertTrue(message = "Las contraseñas no coinciden")
+    public boolean isPasswordConfirmado() {
+        return password == null || confirmarPassword == null || password.equals(confirmarPassword);
+    }
 }

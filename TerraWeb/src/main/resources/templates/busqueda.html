@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <script th:src="@{/js/form-validation.js}" defer></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" th:content="${_csrf.token}">
@@ -397,7 +398,7 @@
         </div>
         <div class="results-bar">
           <p class="results-copy">
-            Mostrando <strong th:text="|${desde}–${hasta} de ${totalPropiedades} propiedades disponibles|">0 propiedades disponibles</strong>
+            Mostrando <strong th:text="|${totalPropiedades} propiedades disponibles|">0 propiedades disponibles</strong>
           </p>
           <label class="sort-control" for="sort-select">Ordenar
             <select id="sort-select" name="orden" onchange="this.form.submit()">
@@ -650,10 +651,7 @@
         headers[csrfHeader] = csrfToken;
       }
       const response = await fetch(url, { method, headers, credentials: "same-origin" });
-      if (!response.ok) {
-        throw new Error("No se pudieron guardar tus favoritos. Inténtalo nuevamente.");
-      }
-      return new Set((await response.json()).map(String));
+      return new Set((await TerraValidation.readResponse(response)).map(String));
     }
 
     function readLocalFavorites() {

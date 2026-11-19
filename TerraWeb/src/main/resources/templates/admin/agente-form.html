@@ -43,6 +43,7 @@
             outline-offset: 3px;
         }
     </style>
+    <script th:src="@{/js/form-validation.js}" defer></script>
 </head>
 
 <body class="bg-background font-body text-on-surface antialiased">
@@ -85,7 +86,7 @@
                     <div>
                         <label class="mb-1.5 block text-sm font-medium" for="cargo">Cargo</label>
                         <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
-                            id="cargo" th:field="*{cargo}">
+                            id="cargo" required maxlength="160" th:field="*{cargo}">
                             <option value="Director Asociado">Director asociado</option>
                             <option value="Asesor Comercial Senior">Asesor comercial senior</option>
                             <option value="Especialista Fiduciario">Especialista fiduciario</option>
@@ -96,7 +97,7 @@
                     <div>
                         <label class="mb-1.5 block text-sm font-medium" for="especialidad">Especialidad</label>
                         <select class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
-                            id="especialidad" th:field="*{especialidad}">
+                            id="especialidad" required maxlength="120" th:field="*{especialidad}">
                             <option value="Casas exclusivas y residencias">Casas exclusivas y residencias</option>
                             <option value="Departamentos y penthouses">Departamentos y penthouses</option>
                             <option value="Alquileres corporativos">Alquileres corporativos</option>
@@ -107,13 +108,17 @@
                     <div>
                         <label class="mb-1.5 block text-sm font-medium" for="telefono">Teléfono directo</label>
                         <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
-                            id="telefono" type="tel" required maxlength="25" th:field="*{telefono}">
+                            id="telefono" type="tel" required maxlength="25"
+                            pattern="^(?:\+?51[ .-]?)?9(?:[ .-]?\d){8}$" title="Celular peruano de 9 dígitos, con prefijo +51 opcional"
+                            th:field="*{telefono}">
                         <p class="mt-1 text-sm text-error" th:errors="*{telefono}"></p>
                     </div>
                     <div>
                         <label class="mb-1.5 block text-sm font-medium" for="whatsapp">WhatsApp comercial</label>
                         <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
-                            id="whatsapp" type="tel" maxlength="25" th:field="*{whatsapp}">
+                            id="whatsapp" type="tel" maxlength="25"
+                            pattern="^(?:|(?:\+?51[ .-]?)?9(?:[ .-]?\d){8})$" title="Celular peruano de 9 dígitos, con prefijo +51 opcional"
+                            th:field="*{whatsapp}">
                         <p class="mt-1 text-sm text-error" th:errors="*{whatsapp}"></p>
                     </div>
                 </section>

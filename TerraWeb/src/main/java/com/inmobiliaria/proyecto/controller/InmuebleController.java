@@ -1,7 +1,11 @@
 package com.inmobiliaria.proyecto.controller;
 
+import com.inmobiliaria.proyecto.dto.inmueble.InmuebleRequestDto;
+import com.inmobiliaria.proyecto.dto.inmueble.InmuebleResponseDto;
 import com.inmobiliaria.proyecto.models.Inmueble;
 import com.inmobiliaria.proyecto.service.InmuebleService;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/inmuebles") // Ruta principal de tu API REST
+@RequestMapping({"/api/v1/inmuebles", "/api/inmuebles"})
 public class InmuebleController {
 
     private final InmuebleService service;
@@ -19,39 +23,37 @@ public class InmuebleController {
         this.service = service;
     }
 
-    // Tema 4: Método HTTP GET (Obtener todos para el Catálogo)
     @GetMapping
-    public List<Inmueble> listarInmuebles() {
-        return service.obtenerTodos();
+    public List<InmuebleResponseDto> listarInmuebles() {
+        return service.obtenerTodos().stream().map(InmuebleController::aDto).toList();
     }
 
-    // Tema 4: Método HTTP GET (Obtener por ID para Detalle de Propiedad)
     @GetMapping("/{id}")
-    public ResponseEntity<Inmueble> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<InmuebleResponseDto> obtenerPorId(@PathVariable Long id) {
         return service.obtenerPorId(id)
-                .map(ResponseEntity::ok)
+                .map(inmueble -> ResponseEntity.ok(aDto(inmueble)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Tema 4: Método HTTP POST (Guardar nueva propiedad)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Inmueble crearInmueble(@RequestBody Inmueble inmueble) {
-        return service.guardar(inmueble);
+    public InmuebleResponseDto crearInmueble(@Valid @RequestBody InmuebleRequestDto datos) {
+        Inmueble inmueble = new Inmueble(datos.titulo(), datos.precio(), datos.descripcion());
+        return aDto(service.guardar(inmueble));
     }
 
-    // Tema 4: Método HTTP PUT (Editar propiedad)
     @PutMapping("/{id}")
-    public ResponseEntity<Inmueble> actualizarInmueble(@PathVariable Long id, @RequestBody Inmueble detalles) {
+    public ResponseEntity<InmuebleResponseDto> actualizarInmueble(
+            @PathVariable Long id,
+            @Valid @RequestBody InmuebleRequestDto datos) {
         return service.obtenerPorId(id).map(inmueble -> {
-            inmueble.setTitulo(detalles.getTitulo());
-            inmueble.setPrecio(detalles.getPrecio());
-            inmueble.setDescripcion(detalles.getDescripcion());
-            return ResponseEntity.ok(service.guardar(inmueble));
+            inmueble.setTitulo(datos.titulo());
+            inmueble.setPrecio(datos.precio());
+            inmueble.setDescripcion(datos.descripcion());
+            return ResponseEntity.ok(aDto(service.guardar(inmueble)));
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // Tema 4: Método HTTP DELETE (Borrar propiedad)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarInmueble(@PathVariable Long id) {
         if (service.obtenerPorId(id).isPresent()) {
@@ -59,5 +61,13 @@ public class InmuebleController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private static InmuebleResponseDto aDto(Inmueble inmueble) {
+        return new InmuebleResponseDto(
+                inmueble.getId(),
+                inmueble.getTitulo(),
+                inmueble.getPrecio(),
+                inmueble.getDescripcion());
     }
 }

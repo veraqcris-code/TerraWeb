@@ -97,6 +97,19 @@ public class UsuarioService {
         return true;
     }
 
+    @Transactional
+    public boolean desactivarCuenta(String correo, String passwordActual) {
+        Usuario usuario = usuarioRepository.findByCorreoIgnoreCaseAndActivoTrue(correo)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró la cuenta activa."));
+        if (usuario.getPasswordHash() == null
+                || !passwordEncoder.matches(passwordActual, usuario.getPasswordHash())) {
+            return false;
+        }
+        usuario.setActivo(false);
+        usuarioRepository.save(usuario);
+        return true;
+    }
+
     private String normalizarOpcional(String valor) {
         return valor == null || valor.isBlank() ? null : valor.trim();
     }

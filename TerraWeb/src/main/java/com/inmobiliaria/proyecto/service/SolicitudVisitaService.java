@@ -46,13 +46,9 @@ public class SolicitudVisitaService {
         solicitud.setTituloPropiedad(propiedad.getTitulo());
         solicitud.setEstado("NUEVA");
 
-        if (datos.getAgenteId() != null) {
-            try {
-                solicitud.setAgente(agenteService.obtenerEntidad(datos.getAgenteId()));
-            } catch (Exception ignored) {
-                // Agente no encontrado, se deja sin asignar
-            }
-        }
+        solicitud.setAgente(datos.getAgenteId() == null
+                ? propiedad.getAgente()
+                : agenteService.obtenerEntidad(datos.getAgenteId()));
 
         SolicitudVisita guardada = solicitudRepository.save(solicitud);
         return new SolicitudVisitaRespuestaDto(
@@ -77,6 +73,42 @@ public class SolicitudVisitaService {
         return solicitudRepository.findAllByOrderByFechaSolicitudDesc().stream()
                 .map(this::aDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public SolicitudVisitaAdminDto obtener(Long id) {
+        return solicitudRepository.findById(id)
+                .map(this::aDto)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la solicitud " + id));
+    }
+
+    @Transactional
+    public SolicitudVisitaAdminDto actualizar(Long id, SolicitudVisitaDto datos) {
+        SolicitudVisita solicitud = solicitudRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la solicitud " + id));
+        Propiedad propiedad = propiedadRepository.findByIdAndPublicadaTrue(datos.getPropiedadId())
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la propiedad " + datos.getPropiedadId()));
+        solicitud.setNombre(datos.getNombre().trim());
+        solicitud.setTelefono(datos.getTelefono().trim());
+        solicitud.setCorreo(datos.getCorreo().trim().toLowerCase());
+        solicitud.setFechaEstimada(datos.getFechaEstimada());
+        solicitud.setPropiedad(propiedad);
+        solicitud.setTituloPropiedad(propiedad.getTitulo());
+        solicitud.setAgente(datos.getAgenteId() == null
+                ? propiedad.getAgente()
+                : agenteService.obtenerEntidad(datos.getAgenteId()));
+        return aDto(solicitudRepository.save(solicitud));
+    }
+
+    @Transactional
+    public void eliminar(Long id) {
+        SolicitudVisita solicitud = solicitudRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró la solicitud " + id));
+        solicitudRepository.delete(solicitud);
     }
 
     @Transactional

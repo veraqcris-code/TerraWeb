@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inmobiliaria.proyecto.dto.agente.AgentePublicoDto;
 import com.inmobiliaria.proyecto.dto.agente.AgenteDto;
 import com.inmobiliaria.proyecto.dto.admin.AgenteAdminFormDto;
+import com.inmobiliaria.proyecto.exception.CorreoEnUsoException;
 import com.inmobiliaria.proyecto.exception.RecursoNoEncontradoException;
 import com.inmobiliaria.proyecto.models.Agente;
 import com.inmobiliaria.proyecto.mapper.PropiedadMapper;
@@ -95,9 +96,16 @@ public class AgenteService {
 
     @Transactional
     public Agente guardar(Long id, AgenteAdminFormDto datos) {
+        String correo = datos.getCorreo().trim().toLowerCase(Locale.ROOT);
+        boolean correoEnUso = id == null
+                ? repository.existsByCorreoIgnoreCase(correo)
+                : repository.existsByCorreoIgnoreCaseAndIdNot(correo, id);
+        if (correoEnUso) {
+            throw new CorreoEnUsoException("Ya existe un agente con ese correo.");
+        }
         Agente agente = id == null ? new Agente() : obtenerEntidad(id);
         agente.setNombre(datos.getNombre().trim());
-        agente.setCorreo(datos.getCorreo().trim().toLowerCase());
+        agente.setCorreo(correo);
         agente.setCargo(datos.getCargo().trim());
         agente.setEspecialidad(datos.getEspecialidad().trim());
         agente.setEstado(datos.getEstado());

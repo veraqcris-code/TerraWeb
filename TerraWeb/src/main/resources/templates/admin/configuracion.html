@@ -13,6 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#090A0F","surface-container-lowest":"#0D0E14","surface-container-low":"#13141C","surface-container":"#181A24","surface-container-high":"#1E202E","on-surface":"#f1f3f9","on-surface-variant":"#9ca3af","text-muted":"#717a8c","accent-gold":"#FDE68A"},fontFamily:{headline:["Sora","sans-serif"],body:["Inter","sans-serif"]}}}};</script>
     <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/form-validation.js}" defer></script>
     <script th:src="@{/js/admin-panel.js}" defer></script>
 </head>
 <body class="min-h-screen bg-background font-body text-on-surface antialiased">
@@ -42,7 +43,7 @@
                 <div><h2 class="font-headline text-xl font-semibold">Datos de la inmobiliaria</h2><p class="mt-1 text-sm text-on-surface-variant">Información comercial y preferencias regionales.</p></div>
                 <label class="block text-sm">Nombre de la empresa<input class="admin-control mt-1 w-full rounded-lg px-3 py-2.5" name="nombreEmpresa" maxlength="160" required></label>
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <label class="block text-sm">WhatsApp / teléfono<input class="admin-control mt-1 w-full rounded-lg px-3 py-2.5" name="whatsapp" maxlength="25" required></label>
+                    <label class="block text-sm">WhatsApp / teléfono<input class="admin-control mt-1 w-full rounded-lg px-3 py-2.5" name="whatsapp" type="tel" maxlength="25" required></label>
                     <label class="block text-sm">Correo de contacto<input class="admin-control mt-1 w-full rounded-lg px-3 py-2.5" name="correoContacto" type="email" maxlength="180" required></label>
                     <label class="block text-sm">Moneda principal<select class="admin-control mt-1 w-full rounded-lg px-3 py-2.5" name="monedaPrincipal"><option value="PEN">PEN · Soles</option><option value="USD">USD · Dólares</option><option value="EUR">EUR · Euros</option></select></label>
                     <label class="block text-sm">Tipo de cambio (USD a PEN)<input class="admin-control mt-1 w-full rounded-lg px-3 py-2.5" name="tipoCambio" type="number" min="0.01" step="0.01" required></label>
@@ -134,32 +135,35 @@
             settingsMessage.textContent = "Cargando configuración…";
             settingsMessage.className = "mb-4 text-sm text-on-surface-variant";
             const response = await fetch("/api/v1/admin/configuracion", {headers: {"Accept": "application/json"}});
-            if (!response.ok) throw new Error("No se pudo cargar la configuración del servidor.");
-            applySettings(await response.json());
+            applySettings(await TerraValidation.readResponse(response));
             settingsMessage.textContent = "";
         }
 
         document.getElementById("saveChanges").addEventListener("click", async () => {
-            if (!settingsForm.reportValidity()) return;
+            if (!TerraValidation.validateForm(settingsForm)) return;
             const data = Object.fromEntries(new FormData(settingsForm).entries());
             ["notificarSolicitudes", "notificarEstados", "reporteSemanal", "asignacionAutomatica", "vencimientoReservas"]
                 .forEach(name => data[name] = settingsForm.elements.namedItem(name).checked);
             data.tipoCambio = Number(data.tipoCambio);
             settingsMessage.textContent = "Guardando…";
             settingsMessage.className = "mb-4 text-sm text-on-surface-variant";
+            const saveButton = document.getElementById("saveChanges");
+            saveButton.disabled = true;
             try {
                 const response = await fetch("/api/v1/admin/configuracion", {
                     method: "PUT",
                     headers: {"Content-Type": "application/json", "Accept": "application/json", [settingsCsrfHeader]: settingsCsrf},
                     body: JSON.stringify(data)
                 });
-                if (!response.ok) throw new Error("No se pudieron guardar los cambios. Revisa los campos e intenta otra vez.");
-                applySettings(await response.json());
+                applySettings(await TerraValidation.readResponse(response));
                 settingsMessage.textContent = "Los cambios se guardaron correctamente.";
                 settingsMessage.className = "mb-4 text-sm text-emerald-400";
             } catch (error) {
+                TerraValidation.showErrors(settingsForm, error, settingsMessage);
                 settingsMessage.textContent = error.message;
                 settingsMessage.className = "mb-4 text-sm text-red-300";
+            } finally {
+                saveButton.disabled = false;
             }
         });
         document.getElementById("discardChanges").addEventListener("click", () => {
@@ -186,7 +190,7 @@
         }));
         passwordForm.addEventListener("submit", async event => {
             event.preventDefault();
-            if (!passwordForm.reportValidity()) return;
+            if (!TerraValidation.validateForm(passwordForm)) return;
             const data = Object.fromEntries(new FormData(passwordForm).entries());
             data.cerrarOtrasSesiones = passwordForm.elements.namedItem("cerrarOtrasSesiones").checked;
             const message = document.getElementById("passwordMessage");
@@ -208,16 +212,17 @@
                     headers: {"Content-Type": "application/json", "Accept": "application/json", [settingsCsrfHeader]: settingsCsrf},
                     body: JSON.stringify(data)
                 });
-                if (response.status === 401) throw new Error("La contraseña actual no es correcta.");
-                if (response.status === 400) throw new Error("La contraseña nueva debe tener al menos 8 caracteres, una mayúscula y un número.");
-                if (!response.ok) throw new Error("No se pudo actualizar la contraseña. Verifica los datos.");
+                await TerraValidation.readResponse(response);
                 passwordForm.reset();
                 passwordModal.close();
                 settingsMessage.textContent = "La contraseña se actualizó correctamente.";
                 settingsMessage.className = "mb-4 text-sm text-emerald-400";
             } catch (error) {
+                TerraValidation.showErrors(passwordForm, error, message);
                 message.textContent = error.message;
                 message.className = "text-sm text-red-300";
+            } finally {
+                TerraValidation.setBusy(passwordForm, false);
             }
         });
         loadSettings().catch(error => {

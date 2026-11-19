@@ -57,8 +57,28 @@ public class PropiedadService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró la propiedad " + id));
     }
 
+    @Transactional(readOnly = true)
+    public PropiedadDetalleDto obtenerDetalleAdmin(Long id) {
+        return mapper.aDetalle(obtenerEntidad(id));
+    }
+
+    @Transactional
+    public PropiedadDetalleDto guardarDetalle(
+            Long id,
+            PropiedadAdminFormDto datos,
+            List<String> imagenes) {
+        return mapper.aDetalle(guardar(id, datos, imagenes));
+    }
+
     public List<Propiedad> listarTodas() {
         return repository.findAllByOrderByFechaPublicacionDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PropiedadDetalleDto> listarDetallesAdmin() {
+        return repository.findAllByOrderByFechaPublicacionDesc().stream()
+                .map(mapper::aDetalle)
+                .toList();
     }
 
     /**

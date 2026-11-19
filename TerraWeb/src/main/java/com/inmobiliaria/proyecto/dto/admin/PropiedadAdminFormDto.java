@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.AssertTrue;
 
 public class PropiedadAdminFormDto {
 
@@ -18,8 +19,10 @@ public class PropiedadAdminFormDto {
     @DecimalMin("0.01")
     private BigDecimal precio;
     @NotBlank
+    @Pattern(regexp = "PEN|USD|EUR")
     private String moneda = "PEN";
     @NotBlank
+    @Pattern(regexp = "Venta|Alquiler")
     private String modalidad = "Venta";
     @NotBlank
     @Pattern(regexp = "CASA|DEPARTAMENTO|VILLA|PENTHOUSE|TERRENO")
@@ -30,14 +33,15 @@ public class PropiedadAdminFormDto {
     private String distrito;
     @Size(max = 120)
     private String ciudad;
+    @Size(max = 5000)
     private String descripcion;
     @PositiveOrZero
     private Integer habitaciones;
     @PositiveOrZero
     private Integer banos;
-    @DecimalMin("0.0")
+    @DecimalMin("0.01")
     private BigDecimal areaConstruida;
-    @DecimalMin("0.0")
+    @DecimalMin("0.01")
     private BigDecimal areaTotal;
     @PositiveOrZero
     private Integer cocheras;
@@ -45,6 +49,7 @@ public class PropiedadAdminFormDto {
     @NotBlank
     @Pattern(regexp = "DISPONIBLE|RESERVADA|EN_REVISION|VENDIDA|RETIRADA")
     private String estado = "DISPONIBLE";
+    @jakarta.validation.constraints.Positive
     private Long agenteId;
 
     public String getTitulo() { return titulo; }
@@ -81,4 +86,16 @@ public class PropiedadAdminFormDto {
     public void setEstado(String estado) { this.estado = estado; }
     public Long getAgenteId() { return agenteId; }
     public void setAgenteId(Long agenteId) { this.agenteId = agenteId; }
+
+    @AssertTrue(message = "Habitaciones, baños y cocheras deben ser al menos 1, salvo para terrenos")
+    public boolean isEspecificacionesValidas() {
+        return "TERRENO".equals(tipo)
+                || (especificacionValida(habitaciones)
+                        && especificacionValida(banos)
+                        && especificacionValida(cocheras));
+    }
+
+    private boolean especificacionValida(Integer valor) {
+        return valor == null || valor >= 1;
+    }
 }

@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#090A0F","surface-container-lowest":"#0D0E14","surface-container-low":"#13141C","surface-container":"#181A24","surface-container-high":"#1E202E","on-surface":"#f1f3f9","on-surface-variant":"#9ca3af","text-muted":"#717a8c","accent-gold":"#FDE68A"},fontFamily:{headline:["Sora","sans-serif"],body:["Inter","sans-serif"]}}}};</script>
     <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/form-validation.js}" defer></script>
     <script th:src="@{/js/admin-panel.js}" defer></script>
 </head>
 <body class="min-h-screen bg-background font-body text-on-surface antialiased">
@@ -298,10 +299,7 @@
         document.getElementById("openAgentModal").addEventListener("click", () => document.getElementById("agentModal").showModal());
         document.getElementById("closeAgentModal").addEventListener("click", () => document.getElementById("agentModal").close());
         fetch("/api/v1/admin/agentes", {headers: {"Accept": "application/json"}})
-            .then(response => {
-                if (!response.ok) throw new Error("No se pudieron cargar los agentes.");
-                return response.json();
-            })
+            .then(response => TerraValidation.readResponse(response))
             .then(agents => {
                 if (!Array.isArray(agents)) throw new Error("El servidor devolvió un listado de agentes no válido.");
                 allAgents = agents;

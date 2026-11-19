@@ -45,6 +45,7 @@
             outline-offset: 3px;
         }
     </style>
+    <script th:src="@{/js/form-validation.js}" defer></script>
 </head>
 
 <body class="bg-background font-body text-on-surface antialiased">
@@ -174,12 +175,12 @@
                         <div>
                             <label class="mb-1.5 block text-sm font-medium" for="areaConstruida">Área construida (m²)</label>
                             <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
-                                id="areaConstruida" type="number" min="0" step="0.01" th:field="*{areaConstruida}">
+                                id="areaConstruida" type="number" min="0.01" step="0.01" th:field="*{areaConstruida}">
                         </div>
                         <div>
                             <label class="mb-1.5 block text-sm font-medium" for="areaTotal">Área total (m²)</label>
                             <input class="w-full rounded-xl border border-white/10 bg-background px-4 py-3"
-                                id="areaTotal" type="number" min="0" step="0.01" th:field="*{areaTotal}">
+                                id="areaTotal" type="number" min="0.01" step="0.01" th:field="*{areaTotal}">
                         </div>
                         <div>
                             <label class="mb-1.5 block text-sm font-medium" for="agenteId">Agente asignado</label>
@@ -207,7 +208,7 @@
                         </p>
                         <input class="mt-4 block w-full text-sm text-on-surface-variant file:mr-4 file:rounded-full file:border-0 file:bg-accent-gold file:px-5 file:py-2.5 file:font-semibold file:text-background"
                             id="imagenes" type="file" name="imagenes" accept="image/jpeg,image/png,image/webp"
-                            multiple>
+                            multiple data-max-files="10">
                         <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
                             th:if="${!#lists.isEmpty(imagenesGuardadas)}">
                             <article class="relative overflow-hidden rounded-xl border border-white/10 bg-surface-container"

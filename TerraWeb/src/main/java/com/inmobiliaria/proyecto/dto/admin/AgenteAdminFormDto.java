@@ -23,11 +23,12 @@ public class AgenteAdminFormDto {
     @NotBlank
     @Pattern(regexp = "DISPONIBLE|INDUCCION|PAUSA")
     private String estado = "DISPONIBLE";
+    @Size(max = 500)
     private String fotoUrl;
     @NotBlank
-    @Pattern(regexp = "^[+0-9() .-]{7,25}$", message = "Ingrese un teléfono válido")
+    @Pattern(regexp = "^(?:\\+?51[ .-]?)?9(?:[ .-]?\\d){8}$", message = "Ingrese un celular válido de Perú")
     private String telefono;
-    @Pattern(regexp = "^[+0-9() .-]{0,25}$", message = "Ingrese un WhatsApp válido")
+    @Pattern(regexp = "^(?:|(?:\\+?51[ .-]?)?9(?:[ .-]?\\d){8})$", message = "Ingrese un WhatsApp válido")
     private String whatsapp;
     private boolean activo = true;
 

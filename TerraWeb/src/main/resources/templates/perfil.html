@@ -13,6 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet">
+    <script th:src="@{/js/form-validation.js}" defer></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
@@ -220,6 +221,7 @@
                                 </label>
                                 <input class="w-full rounded-xl border border-white/[0.06] bg-surface-container px-4 py-3 text-body-sm text-on-surface focus:border-accent-gold/60 focus:outline-none"
                                     id="telefono" type="tel" autocomplete="tel" required maxlength="25"
+                                    pattern="^(?:\+?51[ .-]?)?9(?:[ .-]?\d){8}$"
                                     placeholder="+51 987 654 321" th:field="*{telefono}">
                                 <p class="mt-1 text-body-sm text-error" th:errors="*{telefono}"></p>
                             </div>
@@ -228,7 +230,7 @@
                                     Documento de identidad
                                 </label>
                                 <input class="w-full rounded-xl border border-white/[0.06] bg-surface-container px-4 py-3 text-body-sm text-on-surface focus:border-accent-gold/60 focus:outline-none"
-                                    id="documentoIdentidad" type="text" maxlength="40"
+                                    id="documentoIdentidad" type="text" maxlength="8" pattern="(?:\d{8})?"
                                     placeholder="Opcional" th:field="*{documentoIdentidad}">
                                 <p class="mt-1 text-body-sm text-error" th:errors="*{documentoIdentidad}"></p>
                             </div>

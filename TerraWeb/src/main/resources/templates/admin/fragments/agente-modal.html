@@ -26,8 +26,8 @@
             <label class="block text-sm">Correo electrónico<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="correo" type="email" maxlength="180" required></label>
             <label class="block text-sm">Cargo<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="cargo" required><option value="Director Asociado">Director asociado</option><option value="Asesor Comercial Senior">Asesor comercial senior</option><option value="Especialista Fiduciario">Especialista fiduciario</option><option value="Asesor Junior">Asesor junior</option></select></label>
             <label class="block text-sm">Especialidad<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="especialidad" required><option value="Casas exclusivas y residencias">Casas exclusivas y residencias</option><option value="Departamentos y penthouses">Departamentos y penthouses</option><option value="Alquileres corporativos">Alquileres corporativos</option><option value="Inversiones y terrenos">Inversiones y terrenos</option></select></label>
-            <label class="block text-sm">Teléfono directo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="telefono" type="tel" maxlength="25" required></label>
-            <label class="block text-sm">WhatsApp comercial<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="whatsapp" type="tel" maxlength="25"></label>
+            <label class="block text-sm">Teléfono directo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="telefono" type="tel" maxlength="25" pattern="^(?:\+?51[ .-]?)?9(?:[ .-]?\d){8}$" required></label>
+            <label class="block text-sm">WhatsApp comercial<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="whatsapp" type="tel" maxlength="25" pattern="^(?:|(?:\+?51[ .-]?)?9(?:[ .-]?\d){8})$"></label>
         </div>
         <fieldset class="space-y-2">
             <legend class="text-sm font-medium">Disponibilidad</legend>

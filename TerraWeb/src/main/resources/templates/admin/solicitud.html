@@ -13,6 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#090A0F","surface-container-lowest":"#0D0E14","surface-container-low":"#13141C","surface-container":"#181A24","surface-container-high":"#1E202E","on-surface":"#f1f3f9","on-surface-variant":"#9ca3af","text-muted":"#717a8c","accent-gold":"#FDE68A"},fontFamily:{headline:["Sora","sans-serif"],body:["Inter","sans-serif"]}}}};</script>
     <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/form-validation.js}" defer></script>
     <script th:src="@{/js/admin-panel.js}" defer></script>
 </head>
 <body class="min-h-screen bg-background font-body text-on-surface antialiased">
@@ -74,7 +75,7 @@
         <form id="requestForm" class="space-y-4 p-6">
             <div class="flex items-center justify-between"><h2 class="font-headline text-xl font-semibold">Registrar solicitud</h2><button class="button-secondary rounded-lg px-3 py-2" id="closeRequestModal" type="button">Cerrar</button></div>
             <label class="block text-sm">Nombre del cliente<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="nombre" required maxlength="120"></label>
-            <div class="grid gap-4 sm:grid-cols-2"><label class="block text-sm">Correo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="correo" type="email" required maxlength="180"></label><label class="block text-sm">Teléfono<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="telefono" required></label></div>
+            <div class="grid gap-4 sm:grid-cols-2"><label class="block text-sm">Correo<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="correo" type="email" required maxlength="180"></label><label class="block text-sm">Teléfono<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="telefono" type="tel" required maxlength="25"></label></div>
             <label class="block text-sm">Propiedad<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="propiedadId" id="requestProperty" required><option value="">Selecciona una propiedad</option></select></label>
             <label class="block text-sm">Asesor asignado<select class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="agenteId" id="requestAgentSelect"><option value="">Sin asignar</option></select></label>
             <label class="block text-sm">Fecha estimada de visita<input class="admin-control mt-1 w-full rounded-lg px-3 py-2" name="fechaEstimada" type="date" required></label>
@@ -198,7 +199,7 @@
                             headers: {"Content-Type": "application/json", [csrfHeader]: csrfToken},
                             body: JSON.stringify({estado: value})
                         });
-                        if (!response.ok) throw new Error("No se pudo actualizar el estado de la solicitud.");
+                        await TerraValidation.readResponse(response);
                         await loadRequests();
                     } catch (error) {
                         requestError.textContent = error.message;
@@ -322,8 +323,7 @@
         async function loadRequests() {
             requestError.textContent = "";
             const response = await fetch("/api/v1/admin/solicitudes", {headers: {"Accept": "application/json"}});
-            if (!response.ok) throw new Error("No se pudieron cargar las solicitudes.");
-            const requests = await response.json();
+            const requests = await TerraValidation.readResponse(response);
             if (!Array.isArray(requests)) throw new Error("El servidor devolvió una lista de solicitudes no válida.");
             allRequests = requests;
             const agentSelect = document.getElementById("requestAgent");
@@ -392,9 +392,8 @@
             try {
                 const propertySelect = document.getElementById("requestProperty");
                 if (propertySelect.options.length === 1) {
-                    const response = await fetch("/api/v1/admin/propiedades", {headers: {"Accept": "application/json"}});
-                    if (!response.ok) throw new Error("No se pudieron cargar las propiedades.");
-                    (await response.json()).forEach(property => {
+                    const response = await fetch("/api/v1/admin/propiedades/opciones", {headers: {"Accept": "application/json"}});
+                    (await TerraValidation.readResponse(response)).forEach(property => {
                         const option = document.createElement("option");
                         option.value = property.id;
                         option.textContent = property.titulo;
@@ -404,15 +403,13 @@
                 const agentSelect = document.getElementById("requestAgentSelect");
                 if (agentSelect.options.length === 1) {
                     const response = await fetch("/api/v1/admin/agentes", {headers: {"Accept": "application/json"}});
-                    if (response.ok) {
-                        const agents = await response.json();
-                        agents.forEach(agent => {
+                    const agents = await TerraValidation.readResponse(response);
+                    agents.forEach(agent => {
                             const option = document.createElement("option");
                             option.value = agent.id;
                             option.textContent = agent.nombre;
                             agentSelect.append(option);
-                        });
-                    }
+                    });
                 }
                 requestModal.showModal();
             } catch (error) {
@@ -424,7 +421,9 @@
         document.getElementById("requestForm").addEventListener("submit", async event => {
             event.preventDefault();
             const form = event.currentTarget;
+            if (!TerraValidation.validateForm(form)) return;
             const formError = document.getElementById("requestFormError");
+            const submitButton = form.querySelector('button[type="submit"]');
             const data = Object.fromEntries(new FormData(form).entries());
             data.propiedadId = Number(data.propiedadId);
             try {
@@ -433,12 +432,15 @@
                     headers: {"Content-Type": "application/json", "Accept": "application/json", [csrfHeader]: csrfToken},
                     body: JSON.stringify(data)
                 });
-                if (!response.ok) throw new Error("Revisa los datos e intenta nuevamente.");
+                await TerraValidation.readResponse(response);
                 form.reset();
                 requestModal.close();
                 await loadRequests();
             } catch (error) {
+                TerraValidation.showErrors(form, error, formError);
                 formError.textContent = error.message;
+            } finally {
+                submitButton.disabled = false;
             }
         });
         loadRequests().catch(error => {

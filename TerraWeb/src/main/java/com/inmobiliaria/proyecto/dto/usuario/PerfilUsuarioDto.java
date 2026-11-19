@@ -19,10 +19,10 @@ public class PerfilUsuarioDto {
     private String correo;
 
     @NotBlank
-    @Pattern(regexp = "^[+0-9() .-]{7,25}$", message = "Ingrese un teléfono válido")
+    @Pattern(regexp = "^(?:\\+?51[ .-]?)?9(?:[ .-]?\\d){8}$", message = "Ingrese un celular válido de Perú")
     private String telefono;
 
-    @Size(max = 40)
+    @Pattern(regexp = "^(?:|\\d{8})$", message = "El DNI debe contener 8 dígitos")
     private String documentoIdentidad;
 
     @Size(max = 160)
@@ -32,6 +32,7 @@ public class PerfilUsuarioDto {
     @Pattern(regexp = "PEN|USD|EUR", message = "Seleccione una moneda válida")
     private String monedaPreferida = "PEN";
 
+    @Size(max = 500)
     private String fotoUrl;
 
     public static PerfilUsuarioDto desde(Usuario usuario) {

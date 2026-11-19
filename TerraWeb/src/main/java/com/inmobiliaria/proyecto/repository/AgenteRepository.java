@@ -9,5 +9,9 @@ public interface AgenteRepository extends JpaRepository<Agente, Long> {
 
     long countByActivoTrue();
 
+    boolean existsByCorreoIgnoreCase(String correo);
+
+    boolean existsByCorreoIgnoreCaseAndIdNot(String correo, Long id);
+
     List<Agente> findByActivoTrueOrderByNombreAsc();
 }

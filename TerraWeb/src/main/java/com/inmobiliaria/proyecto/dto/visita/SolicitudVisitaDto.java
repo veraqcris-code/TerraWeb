@@ -7,6 +7,7 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class SolicitudVisitaDto {
@@ -16,7 +17,7 @@ public class SolicitudVisitaDto {
     private String nombre;
 
     @NotBlank
-    @Pattern(regexp = "^[+0-9() .-]{7,25}$", message = "Ingrese un teléfono válido")
+    @Pattern(regexp = "^(?:\\+?51[ .-]?)?9(?:[ .-]?\\d){8}$", message = "Ingrese un celular válido de Perú")
     private String telefono;
 
     @NotBlank
@@ -29,8 +30,10 @@ public class SolicitudVisitaDto {
     private LocalDate fechaEstimada;
 
     @NotNull
+    @Positive
     private Long propiedadId;
 
+    @Positive
     private Long agenteId;
 
     public String getNombre() { return nombre; }
